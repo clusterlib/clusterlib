@@ -2,6 +2,10 @@
 This module allows to load and store values using a simple sqlite database.
 """
 
+# Authors: Arnaud Joly
+#
+# License: BSD 3 clause
+
 import os
 import sqlite3
 import pickle

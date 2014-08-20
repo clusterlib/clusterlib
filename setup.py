@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+# Authors: Arnaud Joly
+#
+# License: BSD 3 clause
+
 from distutils.core import setup
 
 import clusterlib

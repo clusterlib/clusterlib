@@ -1,3 +1,7 @@
+# Authors: Arnaud Joly
+#
+# License: BSD 3 clause
+
 from tempfile import NamedTemporaryFile
 
 from nose.tools import assert_equal

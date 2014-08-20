@@ -4,6 +4,10 @@ Simple Linux Utility for Resource Management (SLURM).
 
 """
 
+# Authors: Arnaud Joly
+#
+# License: BSD 3 clause
+
 import subprocess
 from xml.etree import ElementTree
 

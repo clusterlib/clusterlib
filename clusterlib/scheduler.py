@@ -39,6 +39,9 @@ def _slurm_queued_or_running_jobs(warn=False):
 
 def queued_or_running_jobs():
     """Return name list of queued or running jobs on SGE and SLURM"""
-    return [queued_or_running()
-            for queued_or_running in [_sge_queued_or_running_jobs,
-                                      _slurm_queued_or_running_jobs]]
+    out = []
+    for queued_or_running in (_sge_queued_or_running_jobs,
+                              _slurm_queued_or_running_jobs):
+        out.extend(queued_or_running())
+
+    return out

@@ -2,9 +2,11 @@
 #
 # License: BSD 3 clause
 
+import sqlite3
 from tempfile import NamedTemporaryFile
 
 from nose.tools import assert_equal
+from nose.tools import assert_raises
 
 from ..storage import sqlite3_loads
 from ..storage import sqlite3_dumps
@@ -34,6 +36,11 @@ def test_sqlite3_storage():
         }
         sqlite3_dumps(fname, "complex", complex_object)
         assert_equal(sqlite3_loads(fname, "complex"), complex_object)
+
+        # Try to insert object twice
+        assert_raises(sqlite3.IntegrityError, sqlite3_dumps,
+                      fname, "complex", complex_object)
+
 
 
     # Without any sqlite 3 database

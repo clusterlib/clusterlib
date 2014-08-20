@@ -78,7 +78,8 @@ def sqlite3_dumps(fname, key, value, timeout=7200.0):
         path to the sqlite database
 
     key : str
-        Key to the object
+        Key to the object.  If the key is already present in the database, it
+        will raise an exception
 
     value : object
         Object to stored

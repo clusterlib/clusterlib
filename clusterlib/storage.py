@@ -54,6 +54,7 @@ def sqlite3_loads(fname, key, timeout=7200.0):
                     out.append(value)
                 else:
                     out.append(value[0]) # ravel one length tuple
+            cursor.close()
 
         out = [None if value is None else pickle.loads(bytes(value))
                for value in out]

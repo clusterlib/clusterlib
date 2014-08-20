@@ -66,7 +66,7 @@ def sqlite3_loads(fname, key, timeout=7200.0):
 
 
 def sqlite3_dumps(fname, key, value, timeout=7200.0):
-    """Dumpy value at key in the sqlite3 database
+    """Dumps value with key in the sqlite3 database
 
     Parameters
     ----------

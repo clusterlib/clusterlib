@@ -24,10 +24,12 @@ def sqlite3_loads(fname, key, timeout=7200.0):
     In order to improve improve performance, it's advised to pass
     query the database using list of key.
 
+    Note if there is no sqlite3 at fname, then None is return for each key.
+
     Parameters
     ----------
     fname : str
-        path to the sqlite database
+        Path to the sqlite database
 
     key : str or list of str
 
@@ -41,22 +43,24 @@ def sqlite3_loads(fname, key, timeout=7200.0):
     if isinstance(key, str):
         key = [key]
 
-    if not os.path.exists(fname):
-        raise ValueError("No sqlite database at %s" % fname)
+    if os.path.exists(fname):
+        with sqlite3.connect(fname, timeout=timeout) as connection:
+            cursor = connection.cursor()
+            out = []
+            for k in key:
+                cursor.execute("SELECT value FROM dict where key = ?", (k,))
+                value = cursor.fetchone() # key is the primary key
+                if value is None:
+                    out.append(value)
+                else:
+                    out.append(value[0]) # ravel one length tuple
 
-    with sqlite3.connect(fname, timeout=timeout) as connection:
-        cursor = connection.cursor()
-        out = []
-        for k in key:
-            cursor.execute("SELECT value FROM dict where key = ?", (k,))
-            value = cursor.fetchone() # key is the primary key
-            if value is None:
-                out.append(value)
-            else:
-                out.append(value[0]) # ravel one length tuple
+        out = [None if value is None else pickle.loads(bytes(value))
+               for value in out]
+    else:
+        # There is no sqlite database yet.
+        out = [None] * len(key)
 
-    out = [None if value is None else pickle.loads(bytes(value))
-           for value in out]
 
     # Ravel if needed
     if len(key) == 1:

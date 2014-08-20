@@ -34,3 +34,9 @@ def test_sqlite3_storage():
         }
         sqlite3_dumps(fname, "complex", complex_object)
         assert_equal(sqlite3_loads(fname, "complex"), complex_object)
+
+
+    # Without any sqlite 3 database
+    assert_equal(sqlite3_loads(fname, "0"), None)
+    assert_equal(sqlite3_loads(fname, ["0", "1"]), [None, None])
+

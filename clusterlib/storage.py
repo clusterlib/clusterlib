@@ -15,7 +15,10 @@ __all__ = [
 # sqlite3 ---------------------------------------------------------------------
 
 def sqlite3_loads(fname, key, timeout=7200.0):
-    """
+    """Load value with key from sqlite3 store at fname
+
+    In order to improve improve performance, it's advised to pass
+    query the database using list of key.
 
     Parameters
     ----------
@@ -42,11 +45,11 @@ def sqlite3_loads(fname, key, timeout=7200.0):
         out = []
         for k in key:
             cursor.execute("SELECT value FROM dict where key = ?", (k,))
-            value = cursor.fetchone()
+            value = cursor.fetchone() # key is the primary key
             if value is None:
                 out.append(value)
             else:
-                out.append(value[0])
+                out.append(value[0]) # ravel one length tuple
 
     out = [None if value is None else pickle.loads(bytes(value))
            for value in out]
@@ -59,7 +62,20 @@ def sqlite3_loads(fname, key, timeout=7200.0):
 
 
 def sqlite3_dumps(fname, key, value, timeout=7200.0):
-    """Dumpy value at key in the sqlite3 database"""
+    """Dumpy value at key in the sqlite3 database
+
+    Parameters
+    ----------
+    fname : str
+        path to the sqlite database
+
+    key : str
+        Key to the object
+
+    value : object
+        Object to stored
+
+    """
     value = pickle.dumps(value, protocol=pickle.HIGHEST_PROTOCOL)
 
     connection = sqlite3.connect(fname, timeout=timeout)

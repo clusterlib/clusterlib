@@ -15,7 +15,7 @@ To get the latest code using git, simply type:
     git clone git://github.com/arjoly/clusterlib.git
 
 If you don't have git installed, you can download a zip or tarball of the
-latest code: http://github.com/arjoly/clusterlib/archives/master
+latest code: http://github.com/arjoly/clusterlib/archive/master
 
 
 Installing

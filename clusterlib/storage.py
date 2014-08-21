@@ -19,7 +19,7 @@ __all__ = [
 # sqlite3 ---------------------------------------------------------------------
 
 def sqlite3_loads(fname, key, timeout=7200.0):
-    """Load value with key from sqlite3 store at fname
+    """Load value with key from sqlite3 stored at fname
 
     In order to improve improve performance, it's advised to pass
     query the database using list of key.

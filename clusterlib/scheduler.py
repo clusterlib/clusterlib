@@ -109,7 +109,10 @@ def submit(job_command, job_name="job", time="24:00:00", memory=4000,
     Returns
     -------
     submission_query : str,
-        Return the submission query in the appropriate format
+        Return the submission query in the appropriate format.
+        The obtained query could be directly launch using os.subprocess.
+        Further options could be appended at the end of the string.
+
 
     """
     if backend in _TEMPLATE:

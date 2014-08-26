@@ -77,7 +77,8 @@ _LAUNCHER = {
 }
 
 def submit(job_command, job_name="job", time="24:00:00", memory=4000,
-           email=None, email_options=None, log_directory=None, backend="sge"):
+           email=None, email_options=None, log_directory=None, backend="sge",
+           shell_script="#!/bin/bash\n"):
     """Write the submission query (without script)
 
     Parameters
@@ -105,6 +106,10 @@ def submit(job_command, job_name="job", time="24:00:00", memory=4000,
 
     backend : 'sge' or 'slurm'
         Backend where the job will be submitted
+
+    shell_script : str
+        Specify shell that is used by the script. Note should be ended by a
+        "\n" to work properly.
 
     Returns
     -------
@@ -145,7 +150,7 @@ def submit(job_command, job_name="job", time="24:00:00", memory=4000,
 
     # Using echo job_commands | launcher job_options allows to avoid creating
     # a script file. The script is indeed created on the flight.
-    command = ("echo '%s' | %s %s"
-               % (job_command, launcher, " ".join(job_options)))
+    command = ("echo '%s%s' | %s %s"
+               % (shell_script, job_command, launcher, " ".join(job_options)))
 
     return command

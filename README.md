@@ -31,3 +31,4 @@ in the source code directory.
 TODO
 ----
     - Add a note on the python executable
+    - Find a way to get job id / job name in a generic way

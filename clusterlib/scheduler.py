@@ -63,7 +63,7 @@ _SLURM_TEMPLATE = {
     "time": "--time=%s",
     "email": "--mail-user=%s",
     "email_options": "--mail-type=%s",
-    "log_directory": "-o %s/%j.txt",
+    "log_directory": "-o %s/%s.txt",
 }
 
 _TEMPLATE = {

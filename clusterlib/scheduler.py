@@ -63,7 +63,7 @@ _SLURM_TEMPLATE = {
     "time": "--time=%s",
     "email": "--mail-user=%s",
     "email_options": "--mail-type=%s",
-    "log_directory": "-o %s/%j",
+    "log_directory": "-o %s/%j.txt",
 }
 
 _TEMPLATE = {
@@ -135,7 +135,13 @@ def submit(job_command, job_name="job", time="24:00:00", memory=4000,
         job_options.append(template["email_options"] % email_options)
 
     if log_directory:
-        job_options.append(template["log_directory"] % log_directory)
+        if backend == "sge":
+            job_options.append(template["log_directory"] % log_directory)
+        else:
+            # backend == "slurm":
+            job_options.append(template["log_directory"]
+                               % (log_directory, job_name))
+
 
     # Using echo job_commands | launcher job_options allows to avoid creating
     # a script file. The script is indeed created on the flight.

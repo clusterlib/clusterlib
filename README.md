@@ -28,7 +28,15 @@ As any Python packages, to install clusterlib, simply do:
 in the source code directory.
 
 
-TODO
-----
-    - Add a note on the python executable
+Tips when working on supercomputer
+----------------------------------
+    - Refuse the temptation to guess: work with absolute path.
+    - With multiple python interpreter, use absolute path to the desired python
+      interpreter.
+    - ``sys.executable`` will give you the current python interpreter.
+    - If objects are hashed, hash them sooner rather than later.
+
+
+TODO list
+---------
     - Find a way to get job id / job name in a generic way

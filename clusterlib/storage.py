@@ -1,5 +1,6 @@
 """
-This module allows to load and store values using a simple sqlite database.
+This module allows to load and store values using a simple sqlite database
+in a distributed fashion.
 """
 
 # Authors: Arnaud Joly
@@ -21,10 +22,10 @@ __all__ = [
 def sqlite3_loads(fname, key, timeout=7200.0):
     """Load value with key from sqlite3 stored at fname
 
-    In order to improve improve performance, it's advised to 
+    In order to improve improve performance, it's advised to
     query the database using a list of keys.
 
-    Note if there is no sqlite3 database at fname, then None is return for 
+    Note if there is no sqlite3 database at fname, then None is return for
     each key.
 
     Parameters

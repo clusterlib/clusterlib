@@ -1,3 +1,4 @@
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -54,3 +55,10 @@ target/
 
 
 .DS_Store
+
+# Sphinx generated text
+doc/_build/
+doc/auto_examples/
+doc/generated/
+doc/_build/
+.buildinfo

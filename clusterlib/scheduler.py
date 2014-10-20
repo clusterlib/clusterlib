@@ -4,12 +4,6 @@ Simple Linux Utility for Resource Management (SLURM).
 
 """
 
-"""
-Helper functions to work easily wit scheduler such as SLURM or sun grid engine
-(SGE).
-
-"""
-
 # Authors: Arnaud Joly
 #
 # License: BSD 3 clause

@@ -23,7 +23,9 @@ def sqlite3_loads(fname, key, timeout=7200.0):
     """Load value with key from sqlite3 stored at fname
 
     In order to improve improve performance, it's advised to
-    query the database using a list of keys.
+    query the database using a list of keys. Otherwise you might
+    run into the `SQlite lock timeout
+    <http://beets.radbox.org/blog/sqlite-nightmare.html>`_
 
     Note if there is no sqlite3 database at fname, then None is return for
     each key.
@@ -34,6 +36,11 @@ def sqlite3_loads(fname, key, timeout=7200.0):
         Path to the sqlite database
 
     key : str or list of str
+        Key used when the value was stored.
+
+    timeout : float, (default=7200.0)
+        The timeout parameter specifies how long the connection should wait
+        for the lock to go away until raising an exception.
 
     Returns
     -------
@@ -86,6 +93,10 @@ def sqlite3_dumps(fname, key, value, timeout=7200.0):
 
     value : object
         Object to stored
+
+    timeout : float, (default=7200.0)
+        The timeout parameter specifies how long the connection should wait
+        for the lock to go away until raising an exception.
 
     """
     value = pickle.dumps(value, protocol=pickle.HIGHEST_PROTOCOL)

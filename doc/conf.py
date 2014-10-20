@@ -40,6 +40,10 @@ extensions = [
     'numpy_ext.numpydoc',
 ]
 
+# Generate autosummary even if no references
+autosummary_generate = True
+autodoc_default_flags = ['members', 'inherited-members']
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -207,6 +211,7 @@ html_theme_options = {
     # an arbitrary url.
     'navbar_links': [
         ("References", "references"),
+        ("What's new?", "whats_new")
         # ("Examples", "auto_examples/index"),
     ],
 

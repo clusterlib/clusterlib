@@ -3,4 +3,5 @@
 .. toctree::
     :hidden:
 
+    whats_new.rst
     references.rst

@@ -16,6 +16,10 @@ test:
 doc: inplace
 	$(MAKE) -C doc html
 
+clean-doc:
+	rm -rf doc/_build
+	rm -rf doc/generated
+
 view-doc: doc
 	open doc/_build/html/index.html
 
@@ -26,7 +30,7 @@ gh-pages:
 	echo 'Mv file'
 	rsync -a doc/_build/html/ ./
 	echo 'Add new file to git'
-	git add *.html *.js *.inv
+	git add *.html *.js *.inv generated
 	git commit -m "Generated gh-pages for `git log master -1 --pretty=short --abbrev-commit`"
 	git push origin gh-pages
 	git checkout master

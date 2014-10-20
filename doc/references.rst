@@ -16,7 +16,7 @@ This is the class and function reference of the package.
 
 .. autosummary::
    :toctree: generated/
-   :template: class.rst
+   :template: function.rst
 
    scheduler.queued_or_running_jobs
    scheduler.submit
@@ -32,7 +32,7 @@ This is the class and function reference of the package.
 
 .. autosummary::
    :toctree: generated/
-   :template: class.rst
+   :template: function.rst
 
    storage.sqlite3_loads
    storage.sqlite3_dumps

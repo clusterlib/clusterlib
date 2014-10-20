@@ -27,6 +27,12 @@ As any Python packages, to install clusterlib, simply do:
 
 in the source code directory.
 
+Documentation
+-------------
+For making the documentation, Sphinx==1.2.2 and sphinx-bootstrap-theme==0.4.0
+are needed. Then, you can do
+
+    make doc
 
 Tips when working on supercomputer
 ----------------------------------
@@ -39,4 +45,5 @@ Tips when working on supercomputer
 
 TODO list
 ---------
-    - Find a way to get job id / job name in a generic way
+    - Make a travis bot with slurm / sge
+    - Add examples

@@ -109,7 +109,7 @@ def submit(job_command, job_name="job", time="24:00:00", memory=4000,
 
     shell_script : str
         Specify shell that is used by the script. Note should be ended by a
-        "\n" to work properly.
+        ``'\n'`` to work properly.
 
     Returns
     -------

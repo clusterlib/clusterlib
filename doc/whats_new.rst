@@ -9,7 +9,7 @@ dev
 Changelog
 ---------
 
-    - Add a :func:`storage.sqlite3_loads` and :func:`storage.sqlite3_dump`
+    - Add a :func:`storage.sqlite3_loads` and :func:`storage.sqlite3_dumps`
       to work cache easily results of functions or scripts in distributed
       environments. By `Arnaud Joly`_
 

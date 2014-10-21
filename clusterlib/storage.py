@@ -44,37 +44,25 @@ def sqlite3_loads(fname, key, timeout=7200.0):
 
     Returns
     -------
-    value : object or list of object
-        Return the object or list of objects associated to each key.
-        None is return if the key is missing.
+    out : dict
+        Return a dict where each key point is associated to the stored object.
+        If the key is missing, there is no key for this entry in out
 
     """
     if isinstance(key, str):
         key = [key]
 
+    out = dict()
     if os.path.exists(fname):
         with sqlite3.connect(fname, timeout=timeout) as connection:
             cursor = connection.cursor()
-            out = []
             for k in key:
                 cursor.execute("SELECT value FROM dict where key = ?", (k,))
                 value = cursor.fetchone() # key is the primary key
-                if value is None:
-                    out.append(value)
-                else:
-                    out.append(value[0]) # ravel one length tuple
+                if value is not None and value[0]:
+                    out[k] = pickle.loads(bytes(value[0]))
+
             cursor.close()
-
-        out = [None if value is None else pickle.loads(bytes(value))
-               for value in out]
-    else:
-        # There is no sqlite database yet.
-        out = [None] * len(key)
-
-
-    # Ravel if needed
-    if len(key) == 1:
-        out = out[0]
 
     return out
 
@@ -101,8 +89,7 @@ def sqlite3_dumps(fname, key, value, timeout=7200.0):
     """
     value = pickle.dumps(value, protocol=pickle.HIGHEST_PROTOCOL)
 
-    connection = sqlite3.connect(fname, timeout=timeout)
-    with connection:
+    with sqlite3.connect(fname, timeout=timeout) as connection:
         # Create table if needed
         connection.execute("""CREATE TABLE IF NOT EXISTS dict
                               (key TEXT PRIMARY KEY, value BLOB)""")

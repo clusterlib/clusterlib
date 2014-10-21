@@ -60,4 +60,3 @@ Tips when working on supercomputer
 TODO list
 ---------
     - Make a travis bot with slurm / sge
-    - Add examples

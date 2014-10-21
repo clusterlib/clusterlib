@@ -108,13 +108,13 @@ def sqlite3_dumps(dictionnary, file_name, timeout=7200.0):
 
     Examples
     --------
-    Here, we generate a temporary sqlite3 database, then dump some data.
+    Here, we generate a temporary sqlite3 database, then dump some data in it.
 
     >>> from tempfile import NamedTemporaryFile
     >>> from clusterlib.storage import sqlite3_dumps
     >>> from clusterlib.storage import sqlite3_loads
     >>> with NamedTemporaryFile() as fhandle:
-    ...     sqlite3_dumps({"complex_data": [3, 2], "2": 5}, fhandle.name)
+    ...     sqlite3_dumps({"list": [3, 2], "number": 5}, fhandle.name)
     ...
 
     """

@@ -59,7 +59,7 @@ def sqlite3_loads(fname, key, timeout=7200.0):
             for k in key:
                 cursor.execute("SELECT value FROM dict where key = ?", (k,))
                 value = cursor.fetchone() # key is the primary key
-                if value is not None and value[0]:
+                if value is not None:
                     out[k] = pickle.loads(bytes(value[0]))
 
             cursor.close()

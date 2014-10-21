@@ -42,6 +42,11 @@ def test_sqlite3_storage():
         assert_raises(sqlite3.IntegrityError, sqlite3_dumps,
                       fname, "complex", complex_object)
 
+        # Ensure that we can store None
+        sqlite3_dumps(fname, "None", None)
+        assert_equal(sqlite3_loads(fname, ["None"]), {"None": None})
+
+
     # Without any sqlite 3 database
     assert_equal(sqlite3_loads(fname, "0"), dict())
     assert_equal(sqlite3_loads(fname, ["0", "1"]), dict())

@@ -22,7 +22,7 @@ __all__ = [
 def sqlite3_loads(file_name, key, timeout=7200.0):
     """Load value with key from sqlite3 stored at fname
 
-    In order to improve improve performance, it's advised to
+    In order to improve performance, it's advised to
     query the database using a list of keys. Otherwise you might
     run into the `SQlite lock timeout
     <http://beets.radbox.org/blog/sqlite-nightmare.html>.`_
@@ -46,7 +46,8 @@ def sqlite3_loads(file_name, key, timeout=7200.0):
     -------
     out : dict
         Return a dict where each key point is associated to the stored object.
-        If the key is missing, there is no key for this entry in out
+        If a key from key is missing in the sqlite3, then there is no
+        entry in out for this key.
 
     Examples
     --------

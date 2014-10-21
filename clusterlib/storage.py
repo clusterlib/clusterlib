@@ -27,8 +27,8 @@ def sqlite3_loads(file_name, key, timeout=7200.0):
     run into the `SQlite lock timeout
     <http://beets.radbox.org/blog/sqlite-nightmare.html>`_.
 
-    Note if there is no sqlite3 database at fname, then an empty dictionnary
-    is returned.
+    Note if there is no sqlite3 database at ``file_name``,
+    then an empty dictionnary is returned.
 
     Parameters
     ----------

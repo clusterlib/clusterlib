@@ -25,7 +25,7 @@ def sqlite3_loads(file_name, key, timeout=7200.0):
     In order to improve performance, it's advised to
     query the database using a list of keys. Otherwise you might
     run into the `SQlite lock timeout
-    <http://beets.radbox.org/blog/sqlite-nightmare.html>.`_
+    <http://beets.radbox.org/blog/sqlite-nightmare.html>`_.
 
     Note if there is no sqlite3 database at fname, then an empty dictionnary
     is returned.

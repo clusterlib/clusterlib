@@ -127,6 +127,5 @@ def sqlite3_dumps(hashtable, file_name, timeout=7200.0):
                               (key TEXT PRIMARY KEY, value BLOB)""")
 
         # Add a new key
-        for key, value in compressed_hashtable.items():
-            connection.execute("INSERT INTO dict(key, value) VALUES (?, ?)",
-                               (key, value))
+        connection.executemany("INSERT INTO dict(key, value) VALUES (?, ?)",
+                               compressed_hashtable.items())

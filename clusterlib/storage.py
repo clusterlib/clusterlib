@@ -36,8 +36,7 @@ def sqlite3_loads(file_name, key, timeout=7200.0):
         Key used when the value was stored or list of keys.
 
     file_name : str
-        Path to the sqlite database. You can also supply the special name
-        :memory: to create a database in RAM.
+        Path to the sqlite database.
 
     timeout : float, (default=7200.0)
         The timeout parameter specifies how long the connection should wait
@@ -48,6 +47,21 @@ def sqlite3_loads(file_name, key, timeout=7200.0):
     out : dict
         Return a dict where each key point is associated to the stored object.
         If the key is missing, there is no key for this entry in out
+
+    Examples
+    --------
+    Here, we generate a temporary sqlite3 database, dump then load some
+    data from it.
+
+    >>> from tempfile import NamedTemporaryFile
+    >>> from clusterlib.storage import sqlite3_dumps
+    >>> from clusterlib.storage import sqlite3_loads
+    >>> with NamedTemporaryFile() as fhandle:
+    ...     sqlite3_dumps({"3": 3, "2": 5}, fhandle.name)
+    ...     out = sqlite3_loads(fhandle.name, key=["7", "3"])
+    ...     print(out)
+    ...
+    {'3': 3}
 
     """
     if isinstance(key, str):
@@ -81,7 +95,7 @@ def sqlite3_dumps(hashtable, file_name, timeout=7200.0):
     Parameters
     ----------
     fname : str
-        path to the sqlite database
+        Path to the sqlite database.
 
     hashtable: dict of (str, object)
         Each key is a string associated to an object to store in the database,
@@ -91,6 +105,17 @@ def sqlite3_dumps(hashtable, file_name, timeout=7200.0):
     timeout : float, (default=7200.0)
         The timeout parameter specifies how long the connection should wait
         for the lock to go away until raising an exception.
+
+    Examples
+    --------
+    Here, we generate a temporary sqlite3 database, then dump some data.
+
+    >>> from tempfile import NamedTemporaryFile
+    >>> from clusterlib.storage import sqlite3_dumps
+    >>> from clusterlib.storage import sqlite3_loads
+    >>> with NamedTemporaryFile() as fhandle:
+    ...     sqlite3_dumps({"complex_data": [3, 2], "2": 5}, fhandle.name)
+    ...
 
     """
     # compressed value first

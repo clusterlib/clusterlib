@@ -27,8 +27,8 @@ def sqlite3_loads(file_name, key, timeout=7200.0):
     run into the `SQlite lock timeout
     <http://beets.radbox.org/blog/sqlite-nightmare.html>.`_
 
-    Note if there is no sqlite3 database at fname, then None is return for
-    each key.
+    Note if there is no sqlite3 database at fname, then an empty dictionnary
+    is returned.
 
     Parameters
     ----------
@@ -89,7 +89,7 @@ def _compressed(value):
                                        protocol=pickle.HIGHEST_PROTOCOL))
 
 
-def sqlite3_dumps(hashtable, file_name, timeout=7200.0):
+def sqlite3_dumps(dictionnary, file_name, timeout=7200.0):
     """Dumps value with key in the sqlite3 database
 
     Parameters
@@ -97,7 +97,7 @@ def sqlite3_dumps(hashtable, file_name, timeout=7200.0):
     fname : str
         Path to the sqlite database.
 
-    hashtable: dict of (str, object)
+    dictionnary: dict of (str, object)
         Each key is a string associated to an object to store in the database,
         it will raise an exception if the key is already present in the
         database.
@@ -119,7 +119,7 @@ def sqlite3_dumps(hashtable, file_name, timeout=7200.0):
 
     """
     # compressed value first
-    compressed_hashtable = {k: _compressed(v) for k, v in hashtable.items()}
+    compressed_dict = {k: _compressed(v) for k, v in dictionnary.items()}
 
     with sqlite3.connect(file_name, timeout=timeout) as connection:
         # Create table if needed
@@ -128,4 +128,4 @@ def sqlite3_dumps(hashtable, file_name, timeout=7200.0):
 
         # Add a new key
         connection.executemany("INSERT INTO dict(key, value) VALUES (?, ?)",
-                               compressed_hashtable.items())
+                               compressed_dict.items())

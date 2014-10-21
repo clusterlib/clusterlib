@@ -135,7 +135,7 @@ def submit(job_command, job_name="job", time="24:00:00", memory=4000,
     echo '#!/bin/bash
     python main.py --args 1' | sbatch --job-name=job --time=24:00:00 --mem=4000
 
-    The job can be latter launched using for instance ```os.system(script)``.
+    The job can be latter launched using for instance ``os.system(script)``.
 
     """
     if backend in _TEMPLATE:

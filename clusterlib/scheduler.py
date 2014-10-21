@@ -160,8 +160,7 @@ def submit(job_command, job_name="job", time="24:00:00", memory=4000,
     if log_directory:
         if backend == "sge":
             job_options.append(template["log_directory"] % log_directory)
-        else:
-            # backend == "slurm":
+        elif backend == "slurm":
             job_options.append(template["log_directory"]
                                % (log_directory, job_name))
 

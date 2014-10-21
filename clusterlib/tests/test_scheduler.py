@@ -32,4 +32,9 @@ def test_submit():
          'echo \'#!/bin/bash\npython main.py\' | qsub -N "job" -l h_rt=24:00:00 '
          '-l h_vmem=4000M -o path/test/$JOB_NAME.$JOB_ID')
 
+    assert_equal(submit(job_command="python main.py",
+                        log_directory="path/test", backend="slurm"),
+        "echo \'#!/bin/bash\npython main.py\' | sbatch --job-name=job "
+        "--time=24:00:00 --mem=4000 -o path/test/job.txt")
+
     assert_raises(ValueError, submit, job_command="", backend="unknown")

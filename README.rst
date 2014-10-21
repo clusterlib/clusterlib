@@ -31,6 +31,16 @@ As any Python packages, to install clusterlib, simply do:
 
 in the source code directory.
 
+Running the test suite
+=========================
+
+To run the test suite, you need nosetests and the coverage modules.
+Run the test suite using::
+
+    nosetests
+
+from the root of the project.
+
 Documentation
 -------------
 For making the documentation, Sphinx==1.2.2 and sphinx-bootstrap-theme==0.4.0

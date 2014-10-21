@@ -2,6 +2,10 @@
 Module to help working with scheduler such as sun grid engine (SGE) or
 Simple Linux Utility for Resource Management (SLURM).
 
+Main functions covered are :
+    - get the list of names of all running jobs;
+    - generate easily a submission query for a job.
+
 """
 
 # Authors: Arnaud Joly
@@ -77,39 +81,41 @@ _LAUNCHER = {
 }
 
 def submit(job_command, job_name="job", time="24:00:00", memory=4000,
-           email=None, email_options=None, log_directory=None, backend="sge",
-           shell_script="#!/bin/bash\n"):
+           email=None, email_options=None, log_directory=None, backend="slurm",
+           shell_script="#!/bin/bash"):
     """Write the submission query (without script)
 
     Parameters
     ----------
     job_command : str,
-        command associated to the job, e.g. 'python main.py'.
+        Command associated to the job, e.g. 'python main.py'.
 
     job_name : str, optional
-        name of the job.
+        Name of the job.
 
     time : str, optional
-        maximum time format "HH:MM:SS".
+        Maximum time format "HH:MM:SS".
 
     memory : str, optional
-        maximum virtual memory in mega-bytes
+        Maximum virtual memory in mega-bytes
 
     email_address : str, optional
-        email where job information are sent.
+        Email where job information is sent.
 
     email_options : str, optional
-        Format char from beas (begin,end,abort,stop).
+        Specify email options:
+            - SGE : Format char from beas (begin,end,abort,stop) for SGE.
+            - SLURM : either BEGIN, END, FAIL, REQUEUE or ALL.
+        See the documenation for more information
 
     log_directory : str, optional
         Specify the log directory
 
-    backend : 'sge' or 'slurm'
+    backend : {'sge', 'slurm'}
         Backend where the job will be submitted
 
     shell_script : str
-        Specify shell that is used by the script. Note should be ended by a
-        ``'\n'`` to work properly.
+        Specify shell that is used by the script.
 
     Returns
     -------
@@ -118,6 +124,18 @@ def submit(job_command, job_name="job", time="24:00:00", memory=4000,
         The obtained query could be directly launch using os.subprocess.
         Further options could be appended at the end of the string.
 
+    Examples
+    --------
+    First, let's generate a command for SLURM to launch the program
+    ``main.py``.
+
+    >>> from clusterlib.scheduler import submit
+    >>> script = submit("python main.py --args 1")
+    >>> print(script)
+    echo '#!/bin/bash
+    python main.py --args 1' | sbatch --job-name=job --time=24:00:00 --mem=4000
+
+    The job can be latter launched using for instance ```os.system(script)``.
 
     """
     if backend in _TEMPLATE:
@@ -150,7 +168,7 @@ def submit(job_command, job_name="job", time="24:00:00", memory=4000,
 
     # Using echo job_commands | launcher job_options allows to avoid creating
     # a script file. The script is indeed created on the flight.
-    command = ("echo '%s%s' | %s %s"
+    command = ("echo '%s\n%s' | %s %s"
                % (shell_script, job_command, launcher, " ".join(job_options)))
 
     return command

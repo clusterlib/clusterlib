@@ -23,12 +23,12 @@ def test_submit():
          "--mem=4000")
 
     assert_equal(submit(job_command="python main.py", email="test@test.com",
-                        email_options="beas"),
+                        email_options="beas", backend="sge"),
          'echo \'#!/bin/bash\npython main.py\' | qsub -N "job" -l h_rt=24:00:00 '
          '-l h_vmem=4000M -M test@test.com -m beas')
 
     assert_equal(submit(job_command="python main.py",
-                        log_directory="path/test"),
+                        log_directory="path/test", backend="sge"),
          'echo \'#!/bin/bash\npython main.py\' | qsub -N "job" -l h_rt=24:00:00 '
          '-l h_vmem=4000M -o path/test/$JOB_NAME.$JOB_ID')
 

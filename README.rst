@@ -7,6 +7,10 @@ not be preserved.
 
 Aims:  simple, pure python
 
+This library works well with `joblib <https://pythonhosted.org/joblib/>`_,
+which is intended to solve similar issue in shared memory architecture.
+
+
 Getting the latest code
 -----------------------
 

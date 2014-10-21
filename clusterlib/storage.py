@@ -19,24 +19,25 @@ __all__ = [
 
 # sqlite3 ---------------------------------------------------------------------
 
-def sqlite3_loads(fname, key, timeout=7200.0):
+def sqlite3_loads(file_name, key, timeout=7200.0):
     """Load value with key from sqlite3 stored at fname
 
     In order to improve improve performance, it's advised to
     query the database using a list of keys. Otherwise you might
     run into the `SQlite lock timeout
-    <http://beets.radbox.org/blog/sqlite-nightmare.html>`_
+    <http://beets.radbox.org/blog/sqlite-nightmare.html>.`_
 
     Note if there is no sqlite3 database at fname, then None is return for
     each key.
 
     Parameters
     ----------
-    fname : str
-        Path to the sqlite database
-
     key : str or list of str
-        Key used when the value was stored.
+        Key used when the value was stored or list of keys.
+
+    file_name : str
+        Path to the sqlite database. You can also supply the special name
+        :memory: to create a database in RAM.
 
     timeout : float, (default=7200.0)
         The timeout parameter specifies how long the connection should wait
@@ -53,8 +54,8 @@ def sqlite3_loads(fname, key, timeout=7200.0):
         key = [key]
 
     out = dict()
-    if os.path.exists(fname):
-        with sqlite3.connect(fname, timeout=timeout) as connection:
+    if os.path.exists(file_name):
+        with sqlite3.connect(file_name, timeout=timeout) as connection:
             cursor = connection.cursor()
             for k in key:
                 cursor.execute("SELECT value FROM dict where key = ?", (k,))
@@ -64,10 +65,17 @@ def sqlite3_loads(fname, key, timeout=7200.0):
 
             cursor.close()
 
+
     return out
 
 
-def sqlite3_dumps(fname, key, value, timeout=7200.0):
+def _compressed(value):
+    """Compressed binary object with highest pickle protocol for sqlite3"""
+    return sqlite3.Binary(pickle.dumps(value,
+                                       protocol=pickle.HIGHEST_PROTOCOL))
+
+
+def sqlite3_dumps(hashtable, file_name, timeout=7200.0):
     """Dumps value with key in the sqlite3 database
 
     Parameters
@@ -75,25 +83,25 @@ def sqlite3_dumps(fname, key, value, timeout=7200.0):
     fname : str
         path to the sqlite database
 
-    key : str
-        Key to the object.  If the key is already present in the database, it
-        will raise an exception
-
-    value : object
-        Object to stored
+    hashtable: dict of (str, object)
+        Each key is a string associated to an object to store in the database,
+        it will raise an exception if the key is already present in the
+        database.
 
     timeout : float, (default=7200.0)
         The timeout parameter specifies how long the connection should wait
         for the lock to go away until raising an exception.
 
     """
-    value = pickle.dumps(value, protocol=pickle.HIGHEST_PROTOCOL)
+    # compressed value first
+    compressed_hashtable = {k: _compressed(v) for k, v in hashtable.items()}
 
-    with sqlite3.connect(fname, timeout=timeout) as connection:
+    with sqlite3.connect(file_name, timeout=timeout) as connection:
         # Create table if needed
         connection.execute("""CREATE TABLE IF NOT EXISTS dict
                               (key TEXT PRIMARY KEY, value BLOB)""")
 
         # Add a new key
-        connection.execute("INSERT INTO dict(key, value) VALUES (?, ?)",
-                           (key, sqlite3.Binary(value)))
+        for key, value in compressed_hashtable.items():
+            connection.execute("INSERT INTO dict(key, value) VALUES (?, ?)",
+                               (key, value))

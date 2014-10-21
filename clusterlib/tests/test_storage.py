@@ -16,8 +16,7 @@ def test_sqlite3_storage():
     with NamedTemporaryFile() as fhandle:
         fname = fhandle.name
 
-        for i in range(5):
-            sqlite3_dumps(fname, str(i), i)
+        sqlite3_dumps({str(i): i for i in range(5)}, fname)
 
         for i in range(5):
             assert_equal(sqlite3_loads(fname, str(i)), {str(i): i})
@@ -34,18 +33,17 @@ def test_sqlite3_storage():
             "tuple": (3, 2, "a"),
             "set": set([2, 3]),
         }
-        sqlite3_dumps(fname, "complex", complex_object)
-        assert_equal(sqlite3_loads(fname, "complex"),
+        sqlite3_dumps({"complex": complex_object}, file_name=fname)
+        assert_equal(sqlite3_loads(key="complex", file_name=fname),
                      {"complex": complex_object})
 
         # Try to insert object twice
         assert_raises(sqlite3.IntegrityError, sqlite3_dumps,
-                      fname, "complex", complex_object)
+                      {"complex": complex_object}, fname)
 
         # Ensure that we can store None
-        sqlite3_dumps(fname, "None", None)
+        sqlite3_dumps({"None": None}, fname)
         assert_equal(sqlite3_loads(fname, ["None"]), {"None": None})
-
 
     # Without any sqlite 3 database
     assert_equal(sqlite3_loads(fname, "0"), dict())

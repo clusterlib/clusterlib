@@ -12,7 +12,7 @@ NAME = 'clusterlib'
 VERSION = clusterlib.__version__
 AUTHOR = "Arnaud Joly"
 AUTHOR_EMAIL = "arnaud.v.joly@gmail.com"
-URL = '' # TODO
+URL = 'http://clusterlib.github.io/clusterlib/'
 DESCRIPTION = 'Tools to manage jobs on cluster'
 LONG_DESCRIPTION = DESCRIPTION # TODO
 CLASSIFIERS = [
@@ -23,7 +23,6 @@ CLASSIFIERS = [
     'Intended Audience :: Education',
     'License :: OSI Approved :: BSD License',
     'Operating System :: OS Independent',
-    'Programming Language :: Python :: 2.6',
     'Programming Language :: Python :: 2.7',
     'Programming Language :: Python :: 3',
     'Programming Language :: Python :: 3.3',

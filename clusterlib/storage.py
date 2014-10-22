@@ -67,15 +67,14 @@ def sqlite3_loads(file_name, key=None, timeout=7200.0):
     Here, we generate a temporary sqlite3 database, dump then load some
     data from it.
 
-    >>> from __future__ import unicode_literals
     >>> from tempfile import NamedTemporaryFile
     >>> from clusterlib.storage import sqlite3_dumps
     >>> from clusterlib.storage import sqlite3_loads
     >>> with NamedTemporaryFile() as fhandle:
     ...     sqlite3_dumps({"3": 3, "2": 5}, fhandle.name)
     ...     out = sqlite3_loads(fhandle.name, key=["7", "3"])
-    ...     print(out)
-    {u'3': 3}
+    ...     print(out['3'])
+    3
 
     It's also possible to get all key-value pairs from the database without
     specifying the keys.
@@ -83,8 +82,8 @@ def sqlite3_loads(file_name, key=None, timeout=7200.0):
     >>> with NamedTemporaryFile() as fhandle:
     ...     sqlite3_dumps({'first': 1}, fhandle.name)
     ...     out = sqlite3_loads(fhandle.name)
-    ...     print(out)
-    {u'first': 1}
+    ...     print(out['first'])
+    1
 
     """
     if isinstance(key, str):

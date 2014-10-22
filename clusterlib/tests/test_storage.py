@@ -47,6 +47,15 @@ def test_sqlite3_storage():
         sqlite3_dumps({"None": None}, fname)
         assert_equal(sqlite3_loads(fname, ["None"]), {"None": None})
 
+        # Ensure that keys are string
+        assert_raises(TypeError, sqlite3_dumps, {None: None})
+        assert_raises(TypeError, sqlite3_dumps, {5: None})
+        assert_raises(TypeError, sqlite3_dumps, {(5, ): None})
+
+        assert_equal(sqlite3_loads(fname, [None]), dict())
+        assert_raises(Exception, sqlite3_loads, fname, [(5, )])
+        assert_raises(TypeError, sqlite3_loads, fname, 5)
+
     # Without any sqlite 3 database
     assert_equal(sqlite3_loads(fname, "0"), dict())
     assert_equal(sqlite3_loads(fname, ["0", "1"]), dict())

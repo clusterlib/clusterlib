@@ -9,7 +9,7 @@ dev
 Changelog
 ---------
 
-    - Add the possible to get all key-value pairs from the sqlite3 database
+    - Add the possibility to get all key-value pairs from the sqlite3 database
       with :func:`storage.sqlite3_loads` by spetting ``key`` to ``None``.
       By `Arnaud Joly`_
 

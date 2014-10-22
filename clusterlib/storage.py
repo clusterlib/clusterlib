@@ -74,7 +74,9 @@ def sqlite3_loads(file_name, key=None, timeout=7200.0):
     ...     sqlite3_dumps({"3": 3, "2": 5}, fhandle.name)
     ...     out = sqlite3_loads(fhandle.name, key=["7", "3"])
     ...     print(out['3'])
+    ...     print("7" in out)  # "7" is not in the database
     3
+    False
 
     It's also possible to get all key-value pairs from the database without
     specifying the keys.

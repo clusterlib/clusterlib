@@ -9,6 +9,10 @@ dev
 Changelog
 ---------
 
+    - Add the possible to get all key-value pairs from the sqlite3 database
+      with :func:`storage.sqlite3_loads` by spetting ``keys`` to ``None``.
+      By `Arnaud Joly`_
+
     - Add a :func:`storage.sqlite3_loads` and :func:`storage.sqlite3_dumps`
       to work cache easily results of functions or scripts in distributed
       environments. By `Arnaud Joly`_

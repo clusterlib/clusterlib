@@ -19,26 +19,27 @@ __all__ = [
 
 # sqlite3 ---------------------------------------------------------------------
 
-def sqlite3_loads(file_name, key, timeout=7200.0):
+def sqlite3_loads(file_name, key=None, timeout=7200.0):
     """Load value with key from sqlite3 stored at fname
 
     In order to improve performance, it's advised to
-    query the database using a list of keys. Otherwise you might
-    run into the `SQlite lock timeout
+    query the database using a (small) list of keys. Otherwise by calling
+    this functions repeatedly, you might run into the `SQlite lock timeout
     <http://beets.radbox.org/blog/sqlite-nightmare.html>`_.
 
     Note if there is no sqlite3 database at ``file_name``,
-    then an empty dictionnary is returned.
+    then an empty dictionary is returned.
 
     Parameters
     ----------
-    key : str or list of str
-        Key used when the value was stored or list of keys.
+    key : str or list of str or None, optional (default=None)
+        Key used when the value was stored or list of keys. If None, all
+        key, value pair from the database are returned.
 
     file_name : str
         Path to the sqlite database.
 
-    timeout : float, (default=7200.0)
+    timeout : float, optional (default=7200.0)
         The timeout parameter specifies how long the connection should wait
         for the lock to go away until raising an exception.
 
@@ -61,8 +62,16 @@ def sqlite3_loads(file_name, key, timeout=7200.0):
     ...     sqlite3_dumps({"3": 3, "2": 5}, fhandle.name)
     ...     out = sqlite3_loads(fhandle.name, key=["7", "3"])
     ...     print(out)
-    ...
     {'3': 3}
+
+    It's also possible to get all key-value pairs from the database without
+    specifying the keys.
+
+    >>> with NamedTemporaryFile() as fhandle:
+    ...     sqlite3_dumps({'first': 1, 'second': 2}, fhandle.name)
+    ...     out = sqlite3_loads(fhandle.name)
+    ...     print(out)
+    {u'second': 2, u'first': 1}
 
     """
     if isinstance(key, str):
@@ -70,19 +79,32 @@ def sqlite3_loads(file_name, key, timeout=7200.0):
 
     out = dict()
     if os.path.exists(file_name):
-        with sqlite3.connect(file_name, timeout=timeout) as connection:
-            cursor = connection.cursor()
-            for k in key:
-                cursor.execute("SELECT value FROM dict where key = ?", (k,))
-                value = cursor.fetchone() # key is the primary key
-                if value is not None:
-                    out[k] = pickle.loads(bytes(value[0]))
+        if key is None:
+            with sqlite3.connect(file_name, timeout=timeout) as connection:
+                cursor = connection.cursor()
+                cursor.execute("SELECT key, value FROM dict")
+                out = cursor.fetchall()
+                cursor.close()
+            out = dict((key, _decompressed(value)) for key, value in out)
 
-            cursor.close()
+        else:
+            with sqlite3.connect(file_name, timeout=timeout) as connection:
+                cursor = connection.cursor()
+                for k in key:
+                    cursor.execute("SELECT value FROM dict where key = ?",
+                                   (k,))
+                    value = cursor.fetchone() # key is the primary key
+                    if value is not None:
+                        out[k] = _decompressed(bytes(value[0]))
+
+                cursor.close()
 
 
     return out
 
+def _decompressed(value):
+    """Decompressed binary object with highest pickle protocol from sqlite3"""
+    return pickle.loads(bytes(value))
 
 def _compressed(value):
     """Compressed binary object with highest pickle protocol for sqlite3"""
@@ -103,7 +125,7 @@ def sqlite3_dumps(dictionnary, file_name, timeout=7200.0):
         it will raise an exception if the key is already present in the
         database.
 
-    timeout : float, (default=7200.0)
+    timeout : float, optional (default=7200.0)
         The timeout parameter specifies how long the connection should wait
         for the lock to go away until raising an exception.
 

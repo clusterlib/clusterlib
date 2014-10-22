@@ -16,13 +16,15 @@ def test_sqlite3_storage():
     with NamedTemporaryFile() as fhandle:
         fname = fhandle.name
 
-        sqlite3_dumps({str(i): i for i in range(5)}, fname)
+        data = dict((str(i), i) for i in range(5))
+        sqlite3_dumps(data, fname)
 
         for i in range(5):
             assert_equal(sqlite3_loads(fname, str(i)), {str(i): i})
 
         # List of key
         assert_equal(sqlite3_loads(fname, ["1", "3"]), {"1": 1, "3": 3})
+        assert_equal(sqlite3_loads(fname), data)
 
         # Missing in the db
         assert_equal(sqlite3_loads(fname, "unkonwn"), dict())

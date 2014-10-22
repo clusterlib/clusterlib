@@ -41,7 +41,10 @@ Run the test suite using::
 
 from the root of the project.
 
-[![Build Status](https://travis-ci.org/clusterlib/clusterlib.svg?branch=travis)](https://travis-ci.org/clusterlib/clusterlib)
+.. image:: https://secutre.travis-ci.org/clusterlib/clusterlib.png?branch=master
+   :target: https://secutre.travis-ci.org/clusterlib/clusterlib
+   :alt: Build status
+   :align: right
 
 Documentation
 -------------

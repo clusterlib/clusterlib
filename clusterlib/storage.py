@@ -5,10 +5,10 @@ in a distributed fashion. This is a simple `key-value NoSQL
 library and `sqlite3 <http://www.sqlite.org/>`_.
 
 """
-
 # Authors: Arnaud Joly
 #
 # License: BSD 3 clause
+from __future__ import unicode_literals
 
 import os
 import sqlite3
@@ -67,6 +67,7 @@ def sqlite3_loads(file_name, key=None, timeout=7200.0):
     Here, we generate a temporary sqlite3 database, dump then load some
     data from it.
 
+    >>> from __future__ import unicode_literals
     >>> from tempfile import NamedTemporaryFile
     >>> from clusterlib.storage import sqlite3_dumps
     >>> from clusterlib.storage import sqlite3_loads
@@ -74,16 +75,16 @@ def sqlite3_loads(file_name, key=None, timeout=7200.0):
     ...     sqlite3_dumps({"3": 3, "2": 5}, fhandle.name)
     ...     out = sqlite3_loads(fhandle.name, key=["7", "3"])
     ...     print(out)
-    {'3': 3}
+    {u'3': 3}
 
     It's also possible to get all key-value pairs from the database without
     specifying the keys.
 
     >>> with NamedTemporaryFile() as fhandle:
-    ...     sqlite3_dumps({'first': 1, 'second': 2}, fhandle.name)
+    ...     sqlite3_dumps({'first': 1}, fhandle.name)
     ...     out = sqlite3_loads(fhandle.name)
     ...     print(out)
-    {u'second': 2, u'first': 1}
+    {u'first': 1}
 
     """
     if isinstance(key, str):

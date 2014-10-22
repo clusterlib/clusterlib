@@ -7,6 +7,6 @@ python:
   - "3.4"
 # command to install dependencies
 install:
-  - "pip install -e clusterlib"
+  - "pip install ."
 # command to run tests
 script: make

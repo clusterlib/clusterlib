@@ -50,4 +50,3 @@ def test_sqlite3_storage():
     # Without any sqlite 3 database
     assert_equal(sqlite3_loads(fname, "0"), dict())
     assert_equal(sqlite3_loads(fname, ["0", "1"]), dict())
-

@@ -20,6 +20,17 @@ __all__ = [
 ]
 
 
+def _decompressed(value):
+    """Decompressed binary object with highest pickle protocol from sqlite3"""
+    return pickle.loads(bytes(value))
+
+
+def _compressed(value):
+    """Compressed binary object with highest pickle protocol for sqlite3"""
+    return sqlite3.Binary(pickle.dumps(value,
+                                       protocol=pickle.HIGHEST_PROTOCOL))
+
+
 def sqlite3_loads(file_name, key=None, timeout=7200.0):
     """Load value with key from sqlite3 stored at fname
 
@@ -94,23 +105,13 @@ def sqlite3_loads(file_name, key=None, timeout=7200.0):
                 for k in key:
                     cursor.execute("SELECT value FROM dict where key = ?",
                                    (k,))
-                    value = cursor.fetchone() # key is the primary key
+                    value = cursor.fetchone()  # key is the primary key
                     if value is not None:
                         out[k] = _decompressed(bytes(value[0]))
 
                 cursor.close()
 
-
     return out
-
-def _decompressed(value):
-    """Decompressed binary object with highest pickle protocol from sqlite3"""
-    return pickle.loads(bytes(value))
-
-def _compressed(value):
-    """Compressed binary object with highest pickle protocol for sqlite3"""
-    return sqlite3.Binary(pickle.dumps(value,
-                                       protocol=pickle.HIGHEST_PROTOCOL))
 
 
 def sqlite3_dumps(dictionnary, file_name, timeout=7200.0):

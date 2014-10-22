@@ -20,6 +20,7 @@ __all__ = [
     "submit"
 ]
 
+
 def _sge_queued_or_running_jobs(warn=False):
     try:
         xml = subprocess.check_output("qstat -xml", shell=True,
@@ -79,6 +80,7 @@ _LAUNCHER = {
     "sge": "qsub",
     "slurm": "sbatch",
 }
+
 
 def submit(job_command, job_name="job", time="24:00:00", memory=4000,
            email=None, email_options=None, log_directory=None, backend="slurm",
@@ -164,7 +166,6 @@ def submit(job_command, job_name="job", time="24:00:00", memory=4000,
         elif backend == "slurm":
             job_options.append(template["log_directory"]
                                % (log_directory, job_name))
-
 
     # Using echo job_commands | launcher job_options allows to avoid creating
     # a script file. The script is indeed created on the flight.

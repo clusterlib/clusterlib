@@ -1,6 +1,9 @@
 """
 This module allows to load and store values using a simple sqlite database
-in a distributed fashion.
+in a distributed fashion. This is a simple `key-value NoSQL
+<http://en.wikipedia.org/wiki/NoSQL>`_ database using only the Python standard
+library and `sqlite3 <http://www.sqlite.org/>`_.
+
 """
 
 # Authors: Arnaud Joly
@@ -16,8 +19,6 @@ __all__ = [
     "sqlite3_dumps",
 ]
 
-
-# sqlite3 ---------------------------------------------------------------------
 
 def sqlite3_loads(file_name, key=None, timeout=7200.0):
     """Load value with key from sqlite3 stored at fname

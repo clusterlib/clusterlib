@@ -41,8 +41,8 @@ Run the test suite using::
 
 from the root of the project.
 
-.. image:: https://secutre.travis-ci.org/clusterlib/clusterlib.png?branch=master
-   :target: https://secutre.travis-ci.org/clusterlib/clusterlib
+.. image:: https://secure.travis-ci.org/clusterlib/clusterlib.png?branch=master
+   :target: https://secure.travis-ci.org/clusterlib/clusterlib
    :alt: Build status
    :align: right
 

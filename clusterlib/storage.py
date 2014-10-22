@@ -32,12 +32,12 @@ def sqlite3_loads(file_name, key=None, timeout=7200.0):
 
     Parameters
     ----------
+    file_name : str
+        Path to the sqlite database.
+
     key : str or list of str or None, optional (default=None)
         Key used when the value was stored or list of keys. If None, all
         key, value pair from the database are returned.
-
-    file_name : str
-        Path to the sqlite database.
 
     timeout : float, optional (default=7200.0)
         The timeout parameter specifies how long the connection should wait

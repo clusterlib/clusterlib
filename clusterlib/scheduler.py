@@ -90,31 +90,32 @@ def submit(job_command, job_name="job", time="24:00:00", memory=4000,
     job_command : str,
         Command associated to the job, e.g. 'python main.py'.
 
-    job_name : str, optional
+    job_name : str, optional (default="job")
         Name of the job.
 
-    time : str, optional
+    time : str, optional (default="24:00:00")
         Maximum time format "HH:MM:SS".
 
-    memory : str, optional
+    memory : str, optional (default=4000)
         Maximum virtual memory in mega-bytes
 
-    email_address : str, optional
-        Email where job information is sent.
+    email_address : str, optional (default=None)
+        Email where job information is sent. If None, no email is asked
+        to be sent.
 
-    email_options : str, optional
+    email_options : str, optional (default=None)
         Specify email options:
             - SGE : Format char from beas (begin,end,abort,stop) for SGE.
             - SLURM : either BEGIN, END, FAIL, REQUEUE or ALL.
         See the documenation for more information
 
-    log_directory : str, optional
-        Specify the log directory
+    log_directory : str, optional (default=None)
+        Specify the log directory. If None, no log directory is specified.
 
-    backend : {'sge', 'slurm'}
+    backend : {'sge', 'slurm'}, optional (default="slurm")
         Backend where the job will be submitted
 
-    shell_script : str
+    shell_script : str, optional (default="#!/bin/bash")
         Specify shell that is used by the script.
 
     Returns

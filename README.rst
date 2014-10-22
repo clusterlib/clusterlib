@@ -41,6 +41,8 @@ Run the test suite using::
 
 from the root of the project.
 
+[![Build Status](https://travis-ci.org/clusterlib/clusterlib.svg?branch=travis)](https://travis-ci.org/clusterlib/clusterlib)
+
 Documentation
 -------------
 For making the documentation, Sphinx==1.2.2 and sphinx-bootstrap-theme==0.4.0

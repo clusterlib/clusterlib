@@ -9,14 +9,14 @@ dev
 Changelog
 ---------
 
-    - Add travis build for continous integration. By `Arnaud Joly`_
+    - Add a travis bot for continous integration. By `Arnaud Joly`_
 
     - Add the possibility to get all key-value pairs from the sqlite3 database
-      with :func:`storage.sqlite3_loads` by spetting ``key`` to ``None``.
+      with :func:`storage.sqlite3_loads` by setting ``key`` to ``None``.
       By `Arnaud Joly`_
 
     - Add a :func:`storage.sqlite3_loads` and :func:`storage.sqlite3_dumps`
-      to work cache easily results of functions or scripts in distributed
+      to cache easily results of functions or scripts in distributed
       environments. By `Arnaud Joly`_
 
     - Add a :func:`scheduler.queued_or_running_jobs` function to get the names

@@ -4,6 +4,9 @@ in a distributed fashion. This is a simple `key-value NoSQL
 <http://en.wikipedia.org/wiki/NoSQL>`_ database using only the Python standard
 library and `sqlite3 <http://www.sqlite.org/>`_.
 
+This can be used to cache results of functions or scripts in distributed
+environments.
+
 """
 # Authors: Arnaud Joly
 #
@@ -21,7 +24,7 @@ __all__ = [
 
 
 def _decompressed(value):
-    """Decompressed binary object with highest pickle protocol from sqlite3"""
+    """Decompressed a binary object compressed with pickle from sqlite3"""
     return pickle.loads(bytes(value))
 
 
@@ -38,9 +41,6 @@ def sqlite3_loads(file_name, key=None, timeout=7200.0):
     query the database using a (small) list of keys. Otherwise by calling
     this functions repeatedly, you might run into the `SQlite lock timeout
     <http://beets.radbox.org/blog/sqlite-nightmare.html>`_.
-
-    Note if there is no sqlite3 database at ``file_name``,
-    then an empty dictionary is returned.
 
     Parameters
     ----------
@@ -60,7 +60,8 @@ def sqlite3_loads(file_name, key=None, timeout=7200.0):
     out : dict
         Return a dict where each key point is associated to the stored object.
         If a key from key is missing in the sqlite3, then there is no
-        entry in out for this key.
+        entry in out for this key. If there is no sqlite3 database at
+        ``file_name``, then an empty dictionary is returned.
 
     Examples
     --------
@@ -121,13 +122,13 @@ def sqlite3_dumps(dictionnary, file_name, timeout=7200.0):
 
     Parameters
     ----------
-    fname : str
-        Path to the sqlite database.
-
     dictionnary: dict of (str, object)
         Each key is a string associated to an object to store in the database,
         it will raise an exception if the key is already present in the
         database.
+
+    fname : str
+        Path to the sqlite database.
 
     timeout : float, optional (default=7200.0)
         The timeout parameter specifies how long the connection should wait

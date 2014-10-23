@@ -1,7 +1,6 @@
 Embarrasingly distributed parallel loop
 =======================================
 
-
 Warnings: the package is still in development. Backward compatibility might
 not be preserved.
 
@@ -32,6 +31,15 @@ As any Python packages, to install clusterlib, simply do:
 in the source code directory.
 
 
+Tips when working on supercomputer
+----------------------------------
+
+- Refuse the temptation to guess: work with absolute path.
+- With multiple python interpreter, use absolute path to the desired python
+  interpreter.
+- ``sys.executable`` will give you the current python interpreter.
+- If objects are hashed, hash them sooner rather than later.
+
 How to contribute?
 ------------------
 
@@ -57,15 +65,12 @@ from the root of the project.
 
 Documentation
 -------------
+
 For making the documentation, Sphinx==1.2.2 and sphinx-bootstrap-theme==0.4.0
 are needed. Then, you can do
 
     make doc
 
-Tips when working on supercomputer
-----------------------------------
-    - Refuse the temptation to guess: work with absolute path.
-    - With multiple python interpreter, use absolute path to the desired python
-      interpreter.
-    - ``sys.executable`` will give you the current python interpreter.
-    - If objects are hashed, hash them sooner rather than later.
+To update the documentation, simply do
+
+    make gh-pages

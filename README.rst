@@ -44,7 +44,7 @@ How to contribute?
 ------------------
 
 To contribute to clusterlib, first create a github account. Then you can
-fork the `clusterlib repository <https://github.com/clusterlib/clusterlib>`.
+fork the `clusterlib repository <https://github.com/clusterlib/clusterlib>`_.
 Once this is done, you can make clone of your fork, make your changes and
 whenever you are happy, send us a pull request to the main repository.
 
@@ -71,6 +71,7 @@ are needed. Then, you can do
 
     make doc
 
-To update the documentation, simply do
+To update the documentation on http://clusterlib.github.io/clusterlib/, simply
+do
 
     make gh-pages

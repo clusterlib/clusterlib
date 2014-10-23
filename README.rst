@@ -31,8 +31,17 @@ As any Python packages, to install clusterlib, simply do:
 
 in the source code directory.
 
+
+How to contribute?
+------------------
+
+To contribute to clusterlib, first create a github account. Then you can
+fork the `clusterlib repository <https://github.com/clusterlib/clusterlib>`.
+Once this is done, you can make clone of your fork, make your changes and
+whenever you are happy, send us a pull request to the main repository.
+
 Running the test suite
-=========================
+----------------------
 
 To run the test suite, you need nosetests and the coverage modules.
 Run the test suite using::

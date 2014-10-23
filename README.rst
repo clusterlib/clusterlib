@@ -69,8 +69,3 @@ Tips when working on supercomputer
       interpreter.
     - ``sys.executable`` will give you the current python interpreter.
     - If objects are hashed, hash them sooner rather than later.
-
-
-TODO list
----------
-    - Make a travis bot with slurm / sge

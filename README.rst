@@ -35,7 +35,7 @@ Tips when working on supercomputer
 ----------------------------------
 
 - Refuse the temptation to guess: work with absolute path.
-- With multiple python interpreter, use absolute path to the desired python
+- With multiple python interpreters, use absolute path to the desired python
   interpreter.
 - ``sys.executable`` will give you the current python interpreter.
 - If objects are hashed, hash them sooner rather than later.

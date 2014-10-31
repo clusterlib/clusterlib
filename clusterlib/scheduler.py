@@ -101,7 +101,7 @@ def submit(job_command, job_name="job", time="24:00:00", memory=4000,
     memory : str, optional (default=4000)
         Maximum virtual memory in mega-bytes
 
-    email_address : str, optional (default=None)
+    email : str, optional (default=None)
         Email where job information is sent. If None, no email is asked
         to be sent.
 

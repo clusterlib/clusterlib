@@ -28,8 +28,8 @@ Submitting a job on a cluster requires to write a shell script to specify the
 resource required by the job. For instance, here you have an example of
 a submission script using the
 'SLURM sbatch command<https://computing.llnl.gov/linux/slurm/sbatch.html>'_
-which scheduled a job requiring at most 10 minutes of computation and 4000 mega
-of ram.
+which scheduled a job requiring at most 10 minutes of computation and 1000 mega
+bytes of ram.
 
 .. code-block:: bash
 

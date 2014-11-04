@@ -21,13 +21,13 @@ jobs without actually needing any submission script and avoiding to re-launch
 queued, running or already done jobs.
 
 
-How to submit job easily job?
------------------------------
+How to submit job easily?
+-------------------------
 
 Submitting a job on a cluster requires to write a shell script to specify the
 resource required by the job. For instance, here you have an example of
 a submission script using the
-'SLURM sbatch command<https://computing.llnl.gov/linux/slurm/sbatch.html>'_
+'SLURM sbatch command <https://computing.llnl.gov/linux/slurm/sbatch.html>'_
 which scheduled a job requiring at most 10 minutes of computation and 1000 mega
 bytes of ram.
 
@@ -67,7 +67,7 @@ for instance, we add the quiet sbatch option::
     echo '#!/bin/bash
     srun hostname' | sbatch --job-name=job-name --time=10:00 --mem=1000 --quiet
 
-For multi-line task, one can add the proper line break character
+For multi-line tasks, one can add the proper line break character
 in the job command::
 
     >>> script = submit("srun hostname\nsleep 60", job_name="job-name",

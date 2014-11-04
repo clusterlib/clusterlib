@@ -21,6 +21,8 @@ jobs without actually needing any submission script and avoiding to re-launch
 queued, running or already done jobs.
 
 
+.. _submit_jobs:
+
 How to submit job easily?
 -------------------------
 
@@ -80,8 +82,30 @@ in the job command::
 How to avoid re-launching queued or running jobs?
 -------------------------------------------------
 
-- show how to use :func:`clusterlib.scheduler.queued_or_running_jobs`
-- show how to generate unique name
+In the previous section, we have seen how to write and generate submission
+queries. This allows to schedule thousands of jobs with simple logic. In order
+to spare computing resources, we are going to add some mechanism to avoid
+launching jobs that are already queued or running.
+
+The function :func:`clusterlib.scheduler.queued_or_running_jobs` allows
+to get the list of all running or queued jobs. This will allow us to deverive
+a first launching manager. Here we want to launch the program ``main``
+
+.. code-block:: python
+
+    import os
+    from clusterlib.scheduler import queued_or_running_jobs
+    from clusterlib.scheduler import submit
+
+    jobs = set(queued_or_running_jobs())
+    for param in range(10, 20, 3):
+        job_name = "job-param=%s" % param
+        if job_name not in jobs:
+            script = submit("./main --param %s" % param,
+                            job_name=job_name, backend="slurm")
+
+            os.system(script)
+
 
 
 How to avoid re-launching already done jobs?

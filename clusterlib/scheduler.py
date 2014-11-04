@@ -44,7 +44,19 @@ def _slurm_queued_or_running_jobs(warn=False):
 
 
 def queued_or_running_jobs():
-    """Return the names of the queued or running jobs under SGE and SLURM"""
+    """Return the names of the queued or running jobs under SGE and SLURM
+
+    The list of jobs could be either the list of all jobs on the scheduler
+    or only the jobs associated to the user calling this function.
+    (Current behavior is unspecified at the moment.)
+
+    Returns
+    -------
+    out : list of string,
+        Returned a list containing all the names of the jobs that are running
+        or queued under the SGE or SLURM scheduler.
+
+    """
     out = []
     for queued_or_running in (_sge_queued_or_running_jobs,
                               _slurm_queued_or_running_jobs):

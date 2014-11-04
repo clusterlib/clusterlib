@@ -56,7 +56,6 @@ without any the previous drawback::
     echo '#!/bin/bash
     srun hostname' | sbatch --job-name=job-name --time=10:00 --mem=1000
 
-
 Launching the job with the generated submission ``script`` can be done using
 ``os.system(script)`` or with the Python ``subprocess`` submodule.
 
@@ -81,11 +80,14 @@ in the job command::
 How to avoid re-launching queued or running jobs?
 -------------------------------------------------
 
+- show how to use :func:`clusterlib.scheduler.queued_or_running_jobs`
+- show how to generate unique name
+
 
 How to avoid re-launching already done jobs?
 --------------------------------------------
 
-Using the storage module or joblib.call_and_shelve
+Using the storage module or the joblib.call_and_shelve
 
 
 A full fledge scikit-learn example

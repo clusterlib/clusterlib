@@ -210,8 +210,9 @@ html_theme_options = {
     # Note the "1" or "True" value above as the third argument to indicate
     # an arbitrary url.
     'navbar_links': [
+        ("User guide", "user_guide"),
         ("References", "references"),
-        ("What's new?", "whats_new")
+        ("What's new?", "whats_new"),
         # ("Examples", "auto_examples/index"),
     ],
 

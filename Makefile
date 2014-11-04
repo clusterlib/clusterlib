@@ -11,7 +11,7 @@ inplace:
 	python setup.py build_ext --inplace
 
 test:
-	nosetests clusterlib
+	nosetests clusterlib doc
 
 doc: inplace
 	$(MAKE) -C doc html

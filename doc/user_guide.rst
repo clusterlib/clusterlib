@@ -3,7 +3,7 @@ User guide
 ==========
 
 This documentation aims at showing how to use python and :mod:`clusterlib` to
-launch and manage jobs on super-computer with scheduler such as SLURM or SGE.
+launch and manage jobs on super-computer with schedulers such as SLURM or SGE.
 
 Typically working on a super-computer requires to maintain and to write
 three programs:
@@ -18,12 +18,65 @@ three programs:
 
 In the following, we will see how to use Python to manage a large number of
 jobs without actually needing any submission script and avoiding to re-launch
-job that are queued, running or already done.
-
-How to submit easily a job?
----------------------------
+queued, running or already done jobs.
 
 
+How to submit job easily job?
+-----------------------------
+
+Submitting a job on a cluster requires to write a shell script to specify the
+resource required by the job. For instance, here you have an example of
+a submission script using the
+'SLURM sbatch command<https://computing.llnl.gov/linux/slurm/sbatch.html>'_
+which scheduled a job requiring at most 10 minutes of computation and 4000 mega
+of ram.
+
+.. code-block:: bash
+
+    #!/bin/bash
+    #
+    #SBATCH --job-name=job-name
+    #SBATCH --time=10:00
+    #SBATCH --mem=1000
+
+    srun hostname
+
+Managing such scripts has several drawbacks: (i) a separate file has to be
+maintained, (ii) parameters and resources are fixed in the script, e.g. memory
+asked can not be adapted automatically given some parameter of the main program
+and (iii) those scripts are scheduler specific.
+
+With the :func:`clusterlib.scheduler.submit` function, you can simply do
+without any the previous drawback::
+
+    >>> from clusterlib.scheduler import submit
+    >>> script = submit("srun hostname", job_name="job-name",
+    ...                 time="10:00", memory=1000, backend="slurm")
+    >>> print(script)
+    echo '#!/bin/bash
+    srun hostname' | sbatch --job-name=job-name --time=10:00 --mem=1000
+
+
+Launching the job with the generated submission ``script`` can be done using
+``os.system(script)`` or with the Python ``subprocess`` submodule.
+
+More options to the submission script could be done by appending those. Here
+for instance, we add the quiet sbatch option::
+
+    >>> script += ' --quiet'  # Note the space in front of --
+    >>> print(script)
+    echo '#!/bin/bash
+    srun hostname' | sbatch --job-name=job-name --time=10:00 --mem=1000 --quiet
+
+For multi-line task, one can add the proper line break character
+in the job command::
+
+    >>> script = submit("srun hostname\nsleep 60", job_name="job-name",
+    ...                 time="10:00", memory=1000, backend="slurm")
+    >>> print(script)
+    echo '#!/bin/bash
+    srun hostname
+    sleep 60' | sbatch --job-name=job-name --time=10:00 --mem=1000
 
 How to avoid re-launching queued or running jobs?
 -------------------------------------------------

@@ -145,7 +145,7 @@ or that aren't running / queued.
 
 .. literalinclude:: ../examples/simple-launcher/clusterlib_launcher.py
 
-This simple launcher already allows to handle very easily thousands of jobs.
+This simple launcher already allows to manage the thousands of jobs.
 
 More tips when working on a supercomputer
 -----------------------------------------

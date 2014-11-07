@@ -70,8 +70,7 @@ string. Here for instance, we add the quiet sbatch option::
     echo '#!/bin/bash
     srun hostname' | sbatch --job-name=job-name --time=10:00 --mem=1000 --quiet
 
-Multi-line tasks are obtained by making the line break character
-in the job command::
+Multi-line tasks are obtained by making a line break in the job command::
 
     >>> script = submit("srun hostname\nsleep 60", job_name="job-name",
     ...                 time="10:00", memory=1000, backend="slurm")

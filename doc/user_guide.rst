@@ -11,7 +11,7 @@ three programs:
 1. A *main program* who performs some useful computations and accept some
    parameters.
 2. A *submission script*, e.g. a bash script, where you define the resource
-   needed by the jobs such the maximal duration and the maximal required
+   needed by the jobs such as the maximal duration and the maximal required
    memory.
 3. A *launching script* which will coordinate your submission scripts and
    and *main program* to perform all the required computations.
@@ -49,7 +49,7 @@ asked can not be adapted automatically given some parameter of the main program
 and (iii) those scripts are scheduler specific.
 
 With the :func:`clusterlib.scheduler.submit` function, you can simply do
-without any the previous drawback::
+everything in Python without any of the previous drawback::
 
     >>> from clusterlib.scheduler import submit
     >>> script = submit("srun hostname", job_name="job-name",
@@ -58,18 +58,19 @@ without any the previous drawback::
     echo '#!/bin/bash
     srun hostname' | sbatch --job-name=job-name --time=10:00 --mem=1000
 
-Launching the job with the generated submission ``script`` can be done using
-``os.system(script)`` or with the Python ``subprocess`` submodule.
+Launching the job with the generated submission ``script`` can be done
+directly using ``os.system(script)`` or with the Python ``subprocess``
+submodule.
 
-More options to the submission script could be done by appending those. Here
-for instance, we add the quiet sbatch option::
+More options to the submission script could be appended to the generated
+string. Here for instance, we add the quiet sbatch option::
 
     >>> script += ' --quiet'  # Note the space in front of --
     >>> print(script)
     echo '#!/bin/bash
     srun hostname' | sbatch --job-name=job-name --time=10:00 --mem=1000 --quiet
 
-For multi-line tasks, one can add the proper line break character
+Multi-line tasks are obtained by making the line break character
 in the job command::
 
     >>> script = submit("srun hostname\nsleep 60", job_name="job-name",
@@ -83,17 +84,15 @@ How to avoid re-launching queued or running jobs?
 -------------------------------------------------
 
 In the previous section, we have seen how to write and generate submission
-queries. This allows to schedule thousands of jobs with simple logic. In order
-to spare computing resources, we are going to add some mechanism to avoid
+queries. This allows to schedule thousands of jobs with a simple logic. In order
+to spare computing resources, we are going to add some mechanisms to avoid
 launching jobs that are already queued or running.
 
-The function :func:`clusterlib.scheduler.queued_or_running_jobs` allows
-to get the list of all running or queued jobs. This will allow us to derive
-a first launching manager.
-
-As a small use example, here we want to launch the program ``main`` for a
-variety of parameters, but avoid re-relaunching jobs that are already
-queued or running.
+The function :func:`clusterlib.scheduler.queued_or_running_jobs` allows to get
+the list of all running or queued jobs. This will allow us to derive a first
+launching manager. As a small usage example, here we want to launch the program
+``main`` for a variety of parameters, but avoid re-relaunching jobs that are
+already queued or running.
 
 .. code-block:: python
 
@@ -113,7 +112,7 @@ queued or running.
 
 Here we have constructed unique job names with a string formatting. As an
 alternative, one can generate hash of the job parameters to have automatically
-unique identifier using either the Python built-in ``hash`` or
+unique identifiers using either the Python built-in ``hash`` or
 `joblib.hash <https://pythonhosted.org/joblib/generated/joblib.hash.html>`_.
 
 
@@ -122,20 +121,20 @@ How to avoid re-launching already done jobs?
 
 While checking if a job is queued or running is done through scheduler,
 checking if a job is already done must be done through the file system.
-Indeed, some information or results of the job must be cached and re-used
-later. Clusterlib offers a simple NO-SQL database based on sqlite3
-to achieve this. With the transactions of the database, jobs could make
+Clusterlib offers a simple NO-SQL database based on sqlite3
+to achieve this. With the transactions of the database, jobs could perform
 simple communications.
 
-Let's take an example, we want to launch the script ``main.py`` with a
+Let's take a concrete example, we want to launch the script ``main.py`` with a
 large number of different parameter combinations. Due to the heavy
-burden, we want to parallelize the script evaluation on the super-computer.
+computational burden, we want to parallelize the script evaluation on a
+super-computer.
 
 .. literalinclude:: ../examples/simple-launcher/main.py
 
-In order to do this, we first modify or add to the original script some
-call to the NO-SQL which indicates which parameter combinations have been
-evaluated.
+In order to do this, we first modify or add to the original script some call to
+the NO-SQL database which will indicate the parameter combinations that have
+been evaluated.
 
 .. literalinclude:: ../examples/simple-launcher/clusterlib_main.py
 
@@ -145,13 +144,15 @@ or that aren't running / queued.
 
 .. literalinclude:: ../examples/simple-launcher/clusterlib_launcher.py
 
-This simple launcher already allows to manage the thousands of jobs.
+This simple launcher allows simply to manage the thousands jobs avoiding
+to repeat jobs that are processed or in processed.
 
 More tips when working on a supercomputer
 -----------------------------------------
 
 - Refuse the temptation to guess: work with absolute path.
 - With multiple python interpreters, use absolute path to the desired python
-  interpreter. ``sys.executable`` will give you the current python interpreter.
+  interpreter. ``sys.executable`` will give you the path of the python
+  interpreter.
 - If objects are hashed, hash them sooner rather than later.
 - Check the logic your programs with a fast and dummy setting.

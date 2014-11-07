@@ -23,8 +23,8 @@ queued, running or already done jobs.
 
 .. _submit_jobs:
 
-How to submit job easily?
--------------------------
+How to submit jobs easily?
+--------------------------
 
 Submitting a job on a cluster requires to write a shell script to specify the
 resource required by the job. For instance, here you have an example of
@@ -88,8 +88,12 @@ to spare computing resources, we are going to add some mechanism to avoid
 launching jobs that are already queued or running.
 
 The function :func:`clusterlib.scheduler.queued_or_running_jobs` allows
-to get the list of all running or queued jobs. This will allow us to deverive
-a first launching manager. Here we want to launch the program ``main``
+to get the list of all running or queued jobs. This will allow us to derive
+a first launching manager.
+
+As a small use example, here we want to launch the program ``main`` for a
+variety of parameters, but avoid re-relaunching jobs that are already
+queued or running.
 
 .. code-block:: python
 
@@ -97,30 +101,54 @@ a first launching manager. Here we want to launch the program ``main``
     from clusterlib.scheduler import queued_or_running_jobs
     from clusterlib.scheduler import submit
 
-    jobs = set(queued_or_running_jobs())
-    for param in range(10, 20, 3):
-        job_name = "job-param=%s" % param
-        if job_name not in jobs:
-            script = submit("./main --param %s" % param,
-                            job_name=job_name, backend="slurm")
+    if __name__ == "__main__":
+        scheduled_jobs = set(queued_or_running_jobs())
+        for param in range(100):
+            job_name = "job-param=%s" % param
+            if job_name not in scheduled_jobs:
+                script = submit("./main --param %s" % param,
+                                job_name=job_name, backend="slurm")
 
-            os.system(script)
+                os.system(script)
 
+Here we have constructed unique job names with a string formatting. As an
+alternative, one can generate hash of the job parameters to have automatically
+unique identifier using either the Python built-in ``hash`` or
+`joblib.hash <https://pythonhosted.org/joblib/generated/joblib.hash.html>`_.
 
 
 How to avoid re-launching already done jobs?
 --------------------------------------------
 
-Using the storage module or the joblib.call_and_shelve
+While checking if a job is queued or running is done through scheduler,
+checking if a job is already done must be done through the file system.
+Indeed, some information or results of the job must be cached and re-used
+later. Clusterlib offers a simple NO-SQL database based on sqlite3
+to achieve this. With the transactions of the database, jobs could make
+simple communications.
 
+Let's take an example, we want to launch the script ``main.py`` with a
+large number of different parameter combinations. Due to the heavy
+burden, we want to parallelize the script evaluation on the super-computer.
 
-A full fledge scikit-learn example
-----------------------------------
+.. literalinclude:: ../examples/simple-launcher/main.py
 
+In order to do this, we first modify or add to the original script some
+call to the NO-SQL which indicates which parameter combination has been
+evaluated.
 
+.. literalinclude:: ../examples/simple-launcher/clusterlib_main.py
 
-More tips when working on supercomputer
----------------------------------------
+Secondly, we write a launcher script (``clusterlib_launcher.py``) to
+use this information and re-launched only jobs that haven't been done
+ or that aren't running / queued.
+
+.. literalinclude:: ../examples/simple-launcher/clusterlib_launcher.py
+
+This simple launcher already allows to handle very easily thousands of jobs.
+
+More tips when working on a supercomputer
+-----------------------------------------
 
 - Refuse the temptation to guess: work with absolute path.
 - With multiple python interpreters, use absolute path to the desired python

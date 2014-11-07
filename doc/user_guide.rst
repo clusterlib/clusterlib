@@ -134,7 +134,7 @@ burden, we want to parallelize the script evaluation on the super-computer.
 .. literalinclude:: ../examples/simple-launcher/main.py
 
 In order to do this, we first modify or add to the original script some
-call to the NO-SQL which indicates which parameter combination has been
+call to the NO-SQL which indicates which parameter combinations have been
 evaluated.
 
 .. literalinclude:: ../examples/simple-launcher/clusterlib_main.py

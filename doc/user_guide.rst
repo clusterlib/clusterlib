@@ -141,7 +141,7 @@ evaluated.
 
 Secondly, we write a launcher script (``clusterlib_launcher.py``) to
 use this information and re-launched only jobs that haven't been done
- or that aren't running / queued.
+or that aren't running / queued.
 
 .. literalinclude:: ../examples/simple-launcher/clusterlib_launcher.py
 

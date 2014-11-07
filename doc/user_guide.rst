@@ -70,7 +70,8 @@ string. Here for instance, we add the quiet sbatch option::
     echo '#!/bin/bash
     srun hostname' | sbatch --job-name=job-name --time=10:00 --mem=1000 --quiet
 
-Multi-line tasks are obtained by making a line break in the job command::
+In the case your task required multiple line, you can separate each command
+by a line break by making a line break in the job command::
 
     >>> script = submit("srun hostname\nsleep 60", job_name="job-name",
     ...                 time="10:00", memory=1000, backend="slurm")
@@ -78,6 +79,7 @@ Multi-line tasks are obtained by making a line break in the job command::
     echo '#!/bin/bash
     srun hostname
     sleep 60' | sbatch --job-name=job-name --time=10:00 --mem=1000
+
 
 How to avoid re-launching queued or running jobs?
 -------------------------------------------------

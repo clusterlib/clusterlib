@@ -3,7 +3,7 @@
 import sys, time
 
 def main(argv=None):
-    """A script with heavy computation"""
+    """A function with heavy computation"""
     if argv is None:
         argv = sys.argv  # For ease, function parameters are sys.argv
 

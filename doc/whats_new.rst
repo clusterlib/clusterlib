@@ -9,6 +9,8 @@ dev
 Changelog
 ---------
 
+    - Add a user guide. By `Arnaud Joly`_
+
     - Add a travis bot for continous integration. By `Arnaud Joly`_
 
     - Add the possibility to get all key-value pairs from the sqlite3 database

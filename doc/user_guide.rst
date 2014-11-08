@@ -18,7 +18,7 @@ three programs:
 
 In the following, we will see how to use Python to manage a large number of
 jobs without actually needing any submission script and avoiding to re-launch
-queued, running or already done jobs.
+queued, running or already completed jobs.
 
 
 .. _submit_jobs:
@@ -27,7 +27,7 @@ How to submit jobs easily?
 --------------------------
 
 Submitting a job on a cluster requires to write a shell script to specify the
-resource required by the job. For instance, here you have an example of
+resource required for the job. For instance, here you have an example of
 a submission script using the
 `SLURM sbatch command <https://computing.llnl.gov/linux/slurm/sbatch.html>`_
 which scheduled a job requiring at most 10 minutes of computation and 1000 mega
@@ -49,7 +49,7 @@ asked can not be adapted automatically given some parameter of the main program
 and (iii) those scripts are scheduler specific.
 
 With the :func:`clusterlib.scheduler.submit` function, you can simply do
-everything in Python without any of the previous drawback::
+everything in Python without any of the previous drawbacks::
 
     >>> from clusterlib.scheduler import submit
     >>> script = submit("srun hostname", job_name="job-name",
@@ -59,7 +59,7 @@ everything in Python without any of the previous drawback::
     srun hostname' | sbatch --job-name=job-name --time=10:00 --mem=1000
 
 Launching the job with the generated submission ``script`` can be done
-directly using ``os.system(script)`` or with the Python ``subprocess``
+directly by using ``os.system(script)`` or with the Python ``subprocess``
 submodule.
 
 More options to the submission script could be appended to the generated
@@ -121,12 +121,12 @@ How to avoid re-launching already done jobs?
 --------------------------------------------
 
 While checking if a job is queued or running is done through scheduler,
-checking if a job is already done must be done through the file system.
+checking if a job is already complete must be done through the file system.
 Clusterlib offers a simple NO-SQL database based on sqlite3
 to achieve this. With the transactions of the database, jobs could perform
 simple communications.
 
-Let's take a concrete example, we want to launch the script ``main.py`` with a
+Let's take a practical example, we want to launch the script ``main.py`` with a
 large number of different parameter combinations. Due to the heavy
 computational burden, we want to parallelize the script evaluation on a
 super-computer.
@@ -140,20 +140,20 @@ been evaluated.
 .. literalinclude:: ../examples/simple-launcher/clusterlib_main.py
 
 Secondly, we write a launcher script (``clusterlib_launcher.py``) to
-use this information and re-launched only jobs that haven't been done
-or that aren't running / queued.
+use this information and re-launch only jobs that have not been done so far
+or that are not running or queued.
 
 .. literalinclude:: ../examples/simple-launcher/clusterlib_launcher.py
 
-This simple launcher allows simply to manage the thousands jobs avoiding
-to repeat jobs that are processed or in processed.
+This simple launcher allows to manage thousands of jobs while avoiding
+to repeat jobs that are processed or in process.
 
-More tips when working on a supercomputer
+More tips when working on a super-computer
 -----------------------------------------
 
-- Refuse the temptation to guess: work with absolute path.
+- Forbid the temptation to guess: work with absolute path.
 - With multiple python interpreters, use absolute path to the desired python
   interpreter. ``sys.executable`` will give you the path of the python
   interpreter.
 - If objects are hashed, hash them sooner rather than later.
-- Check the logic your programs with a fast and dummy setting.
+- Check your program logic with a fast and dummy setting.

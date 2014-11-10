@@ -3,7 +3,9 @@ User guide
 ==========
 
 This documentation aims at showing how to use python and :mod:`clusterlib` to
-launch and manage jobs on super-computer with schedulers such as SLURM or SGE.
+launch and manage jobs on super-computer with schedulers such as
+`SLURM <https://computing.llnl.gov/linux/slurm/>`_ or
+`SGE <http://en.wikipedia.org/wiki/Oracle_Grid_Engine>`_.
 
 Typically working on a super-computer requires to maintain and to write
 three programs:

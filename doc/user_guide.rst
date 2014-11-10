@@ -10,7 +10,7 @@ three programs:
 
 1. A *main program* who performs some useful computations and accept some
    parameters.
-2. A *submission script*, e.g. a bash script, where you define the resource
+2. A *submission script*, e.g. a bash script, where you define the resources
    needed by the jobs such as the maximal duration and the maximal required
    memory.
 3. A *launching script* which will coordinate your submission scripts and
@@ -27,7 +27,7 @@ How to submit jobs easily?
 --------------------------
 
 Submitting a job on a cluster requires to write a shell script to specify the
-resource required for the job. For instance, here you have an example of
+resources required for the job. For instance, here you have an example of
 a submission script using the
 `SLURM sbatch command <https://computing.llnl.gov/linux/slurm/sbatch.html>`_
 which scheduled a job requiring at most 10 minutes of computation and 1000 mega
@@ -120,11 +120,11 @@ unique identifiers using either the Python built-in ``hash`` or
 How to avoid re-launching already done jobs?
 --------------------------------------------
 
-While checking if a job is queued or running is done through scheduler,
-checking if a job is already complete must be done through the file system.
-Clusterlib offers a simple NO-SQL database based on sqlite3
-to achieve this. With the transactions of the database, jobs could perform
-simple communications.
+Checking if a job is queued or running must be done through the scheduler.
+However, knowing if a job is already done must be accomplished through the file
+system. Clusterlib offers a simple NO-SQL database based on sqlite3 to achieve
+this. With the transactions of the database, jobs could register their
+completion.
 
 Let's take a practical example, we want to launch the script ``main.py`` with a
 large number of different parameter combinations. Due to the heavy

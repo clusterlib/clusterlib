@@ -48,7 +48,8 @@ def queued_or_running_jobs():
 
     The list of jobs could be either the list of all jobs on the scheduler
     or only the jobs associated to the user calling this function.
-    (Current behavior is unspecified at the moment.)
+    The default behavior is dependant upon scheduler configuration.
+    Try ``qstat`` or ``squeue`` to know which behavior it follows).
 
     Returns
     -------

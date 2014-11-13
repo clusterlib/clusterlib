@@ -49,7 +49,8 @@ def queued_or_running_jobs():
     The list of jobs could be either the list of all jobs on the scheduler
     or only the jobs associated to the user calling this function.
     The default behavior is dependant upon scheduler configuration.
-    Try ``qstat`` or ``squeue`` to know which behavior it follows).
+    Try ``qstat`` in SGE or ``squeue`` in SLURM to know which behavior it
+    follows).
 
     Returns
     -------

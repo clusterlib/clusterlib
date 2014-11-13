@@ -50,7 +50,7 @@ def queued_or_running_jobs():
     or only the jobs associated to the user calling this function.
     The default behavior is dependant upon scheduler configuration.
     Try ``qstat`` in SGE or ``squeue`` in SLURM to know which behavior it
-    follows).
+    follows.
 
     Returns
     -------

@@ -9,6 +9,8 @@ dev
 Changelog
 ---------
 
+    - Add support for coveralls. By `Arnaud Joly`_
+
     - Add a user guide. By `Arnaud Joly`_
 
     - Add a travis bot for continous integration. By `Arnaud Joly`_

@@ -1,6 +1,14 @@
 Embarrasingly distributed parallel loop
 =======================================
 
+.. image:: https://secure.travis-ci.org/clusterlib/clusterlib.png?branch=master
+   :target: https://secure.travis-ci.org/clusterlib/clusterlib
+   :alt: Build status
+
+.. image:: https://coveralls.io/repos/clusterlib/clusterlib/badge.png?branch=master
+   :target: https://coveralls.io/r/clusterlib/clusterlib
+   :alt: Coverage status
+
 Warnings: the package is still in development. Backward compatibility might
 not be preserved.
 
@@ -48,10 +56,6 @@ Run the test suite using::
 
 from the root of the project.
 
-.. image:: https://secure.travis-ci.org/clusterlib/clusterlib.png?branch=master
-   :target: https://secure.travis-ci.org/clusterlib/clusterlib
-   :alt: Build status
-   :align: right
 
 Documentation
 -------------

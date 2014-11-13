@@ -3,7 +3,7 @@ User guide
 ==========
 
 This documentation aims at showing how to use python and :mod:`clusterlib` to
-launch and manage jobs on super-computer with schedulers such as
+launch and manage jobs on super-computers with schedulers such as
 `SLURM <https://computing.llnl.gov/linux/slurm/>`_ or
 `SGE <http://en.wikipedia.org/wiki/Oracle_Grid_Engine>`_.
 
@@ -16,7 +16,7 @@ three programs:
    needed by the jobs such as the maximal duration and the maximal required
    memory.
 3. A *launching script* which will coordinate your submission scripts and
-   and *main program* to perform all the required computations.
+   and the *main program* to perform all the required computations.
 
 In the following, we will see how to use Python to manage a large number of
 jobs without actually needing any submission script and avoiding to re-launch

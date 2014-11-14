@@ -159,3 +159,4 @@ More tips when working on a super-computer
   interpreter.
 - If objects are hashed, hash them sooner rather than later.
 - Check your program logic with a fast and dummy setting.
+- Use version file system such as git.

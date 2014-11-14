@@ -11,7 +11,6 @@ install:
 # command to run tests
 script: make
 after_success:
-    # Ignore coveralls failures as the coveralls server is not very reliable
-    # but we don't want travis to report a failure in the github UI just
-    # because the coverage report failed to be published.
-    - coveralls
+    - if [[ $ENV == python=3.4* ]]; then
+          coveralls;
+      fi

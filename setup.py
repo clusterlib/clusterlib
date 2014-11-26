@@ -14,7 +14,8 @@ AUTHOR = "Arnaud Joly"
 AUTHOR_EMAIL = "arnaud.v.joly@gmail.com"
 URL = 'http://clusterlib.github.io/clusterlib/'
 DESCRIPTION = 'Tools to manage jobs on cluster'
-LONG_DESCRIPTION = DESCRIPTION # TODO
+with open('README.rst') as f:
+    LONG_DESCRIPTION = f.read()
 CLASSIFIERS = [
     'Development Status :: 2 - Pre-Alpha',
     'Environment :: Console',

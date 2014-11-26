@@ -1,7 +1,6 @@
 # clusterlib_launcher.py
 
 import sys
-import os
 from clusterlib.scheduler import queued_or_running_jobs
 from clusterlib.scheduler import submit
 from clusterlib.storage import sqlite3_loads
@@ -20,5 +19,6 @@ if __name__ == "__main__":
             script = submit(job_command, job_name=job_name)
             print(script)
 
-            # Uncomment this line to launch the jobs
+            # Uncomment those lines to launch the jobs
+            # import os
             # os.system(script)

@@ -63,3 +63,5 @@ doc/generated/
 doc/_build/
 .buildinfo
 *.pyrc
+
+MANIFEST

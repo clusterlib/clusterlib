@@ -1,5 +1,5 @@
-include *.txt *.py
-recursive-include clusterliv *.rst *.py
+include *.txt *.py *.rst
+recursive-include clusterlib *.rst *.py
 graft doc
 graft doc/_static
 graft doc/_templates

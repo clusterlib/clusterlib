@@ -9,6 +9,9 @@ Embarrasingly distributed parallel loop
    :target: https://coveralls.io/r/clusterlib/clusterlib
    :alt: Coverage status
 
+.. image:: https://landscape.io/github/clusterlib/clusterlib/master/landscape.svg
+   :target: https://landscape.io/github/clusterlib/clusterlib/master
+   :alt: Code Health
 
 Warnings: the package is still in development. Backward compatibility might
 not be preserved.

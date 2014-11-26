@@ -21,7 +21,7 @@ __all__ = [
 ]
 
 
-def _sge_queued_or_running_jobs(warn=False):
+def _sge_queued_or_running_jobs():
     try:
         xml = subprocess.check_output("qstat -xml", shell=True,
                                       stderr=subprocess.PIPE)
@@ -32,7 +32,7 @@ def _sge_queued_or_running_jobs(warn=False):
         return []
 
 
-def _slurm_queued_or_running_jobs(warn=False):
+def _slurm_queued_or_running_jobs():
     try:
         out = subprocess.check_output("squeue --noheader -o %j", shell=True,
                                       stderr=subprocess.PIPE)

@@ -4,4 +4,5 @@ strictness: veryhigh
 max-line-length: 80
 autodetect: yes
 ignore-paths:
-    - doc/
+    - doc/sphinxext
+    - doc/generated

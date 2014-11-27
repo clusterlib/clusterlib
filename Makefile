@@ -26,11 +26,12 @@ view-doc: doc
 gh-pages:
 	git checkout master
 	make doc
+	rm -rf ../clusterlib-doc
+	cp -a doc/_build/html ../clusterlib-doc
 	git checkout gh-pages
-	echo 'Mv file'
-	rsync -a doc/_build/html/ ./
+	cp -a ../clusterlib-doc/* .
 	echo 'Add new file to git'
-	git add *.html *.js *.inv generated _static _templates _sources
+	git add `ls ../clusterlib-doc`
 	git commit -m "Generated gh-pages for `git log master -1 --pretty=short --abbrev-commit`"
 	git push origin gh-pages
 	git checkout master

@@ -9,7 +9,9 @@ dev
 Changelog
 ---------
 
-    - Add support for coveralls. By `Arnaud Joly`_
+    - Add support for landscape.io to track code quality. By `Arnaud Joly`_
+
+    - Add support for coveralls to track code coverage. By `Arnaud Joly`_
 
     - Add a user guide. By `Arnaud Joly`_
 

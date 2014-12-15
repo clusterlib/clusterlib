@@ -69,7 +69,14 @@ are needed. Then, you can do
 
     make doc
 
-To update the documentation on http://clusterlib.github.io/clusterlib/, simply
-do
+How to make a release
+---------------------
+What follows is only for maintaners:
 
-    make gh-pages
+  1. Create a branch for the 0.X.Y version if necessary.
+  2. Update What's new in the 0.X.Y version and master branch. Update version
+     in the documentation at ``.doc/conf.py``
+  3. Make point the stable branch to 0.X.Y.
+  4. Check the generated doc on read the doc for the stable and the 0.X.Y
+     version.
+

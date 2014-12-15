@@ -3,7 +3,7 @@
 .. _changes_dev:
 
 
-dev
+0.1
 ===
 
 Changelog

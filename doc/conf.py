@@ -66,7 +66,7 @@ copyright = u'2014, Arnaud Joly'
 #
 # The short X.Y version.
 from clusterlib import __version__
-version = __version__
+version = "dev"
 # The full version, including alpha/beta/rc tags.
 release = __version__
 

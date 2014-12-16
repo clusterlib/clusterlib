@@ -1,6 +1,10 @@
 Embarrasingly distributed parallel loop on clusters of computers
 ================================================================
 
+.. image:: https://badge.fury.io/py/clusterlib.svg
+    :target: http://badge.fury.io/py/clusterlib
+    :alt: Pypi badge - latest release
+
 .. image:: https://secure.travis-ci.org/clusterlib/clusterlib.png?branch=master
    :target: https://secure.travis-ci.org/clusterlib/clusterlib
    :alt: Build status
@@ -12,6 +16,7 @@ Embarrasingly distributed parallel loop on clusters of computers
 .. image:: https://landscape.io/github/clusterlib/clusterlib/master/landscape.svg
    :target: https://landscape.io/github/clusterlib/clusterlib/master
    :alt: Code Health
+
 
 The goal of this library is to ease the creation, launch and management of
 embarassingly parallel jobs on supercomputer such as `SLURM

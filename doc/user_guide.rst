@@ -94,8 +94,8 @@ launching jobs that are already queued or running.
 The function :func:`clusterlib.scheduler.queued_or_running_jobs` allows to get
 the list of all running or queued jobs. This will allow us to derive a first
 launching manager. As a small usage example, here we want to launch the program
-``main`` for a variety of parameters, but avoid re-relaunching jobs that are
-already queued or running.
+``main`` for a variety of parameters, while avoiding to re-relaunch jobs that
+are already queued or running.
 
 .. code-block:: python
 

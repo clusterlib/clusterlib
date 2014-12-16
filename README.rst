@@ -15,9 +15,9 @@ Embarrasingly distributed parallel loop on clusters of computers
 
 The goal of this library is to ease the creation, launch and management of
 embarassingly parallel jobs on supercomputer such as `SLURM
-<https://computing.llnl.gov/linux/slurm/>`_. Some basic primitives (pure
-python NO-SQL database) to work in distributed memory architecture are
-provided.
+<https://computing.llnl.gov/linux/slurm/>`_. Some basic primitives (e.g. pure
+python NO-SQL database) are provided to work in distributed memory
+architecture.
 
 Aims:  simple, pure python
 
@@ -88,9 +88,3 @@ What follows is only for maintaners:
   6. Upload the new release on pypi using
 
      python setup.py sdist upload -r pypi
-
-
-
-
-
-

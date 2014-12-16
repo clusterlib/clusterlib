@@ -1,25 +1,28 @@
-Embarrasingly distributed parallel loop
-=======================================
+Embarrasingly distributed parallel loop on clusters of computers
+================================================================
 
-.. image:: https://secure.travis-ci.org/clusterlib/clusterlib.png?branch=master
+.. image:: https://secure.travis-ci.org/clusterlib/clusterlib.png?branch=0.1.X
    :target: https://secure.travis-ci.org/clusterlib/clusterlib
    :alt: Build status
 
-.. image:: https://coveralls.io/repos/clusterlib/clusterlib/badge.png?branch=master
+.. image:: https://coveralls.io/repos/clusterlib/clusterlib/badge.png?branch=0.1.X
    :target: https://coveralls.io/r/clusterlib/clusterlib
    :alt: Coverage status
 
-.. image:: https://landscape.io/github/clusterlib/clusterlib/master/landscape.svg
-   :target: https://landscape.io/github/clusterlib/clusterlib/master
+.. image:: https://landscape.io/github/clusterlib/clusterlib/0.1.X/landscape.svg
+   :target: https://landscape.io/github/clusterlib/clusterlib/0.1.X
    :alt: Code Health
 
-Warnings: the package is still in development. Backward compatibility might
-not be preserved.
+The goal of this library is to ease the creation, launch and management of
+embarassingly parallel jobs on supercomputer such as `SLURM
+<https://computing.llnl.gov/linux/slurm/>`_. Some basic primitives (pure
+python NO-SQL database) to work in distributed memory architecture are
+provided.
 
 Aims:  simple, pure python
 
-This library works well with `joblib <https://pythonhosted.org/joblib/>`_,
-which is intended to solve similar issues in shared memory architecture.
+If you want to parallelize your python jobs in shared memory architecture, I
+advise you to use `joblib <https://pythonhosted.org/joblib/>`_.
 
 
 Getting the latest code

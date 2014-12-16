@@ -135,7 +135,7 @@ super-computer.
 
 .. literalinclude:: ../examples/simple-launcher/main.py
 
-In order to do this, we first modify or add to the original script some call to
+First, we modify or add to the original script some call to
 the NO-SQL database which will indicate the parameter combinations that have
 been evaluated.
 

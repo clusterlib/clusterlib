@@ -11,9 +11,12 @@ Main functions covered are :
 # Authors: Arnaud Joly
 #
 # License: BSD 3 clause
+from __future__ import unicode_literals
 
+import os
 import subprocess
 from xml.etree import ElementTree
+
 
 __all__ = [
     "queued_or_running_jobs",
@@ -21,29 +24,39 @@ __all__ = [
 ]
 
 
-def _sge_queued_or_running_jobs():
+def _sge_queued_or_running_jobs(user=None):
+    """Get queued or running jobs from SGE queue system"""
+    command = "qstat -xml"
+    if user is not None:
+        command += " -u {}".format(user)
+
     try:
-        xml = subprocess.check_output("qstat -xml", shell=True,
-                                      stderr=subprocess.PIPE)
-        tree = ElementTree.fromstring(xml)
-        return [leaf.text for leaf in tree.iter("JB_name")]
+        with open(os.devnull, 'w') as shutup:
+            xml = subprocess.check_output(command, shell=True, stderr=shutup)
+            tree = ElementTree.fromstring(xml)
+            return [leaf.text for leaf in tree.iter("JB_name")]
     except subprocess.CalledProcessError:
         # qstat is not available
         return []
 
 
-def _slurm_queued_or_running_jobs():
+def _slurm_queued_or_running_jobs(user=None):
+    """Get queued or running jobs from SLURM queue system"""
+    command = "squeue --noheader -o %j"
+    if user is not None:
+        command += " -u {}".format(user)
+
     try:
-        out = subprocess.check_output("squeue --noheader -o %j", shell=True,
-                                      stderr=subprocess.PIPE)
-        out = out.split("\n")[:-1]
-        return out
+        with open(os.devnull, 'w') as shutup:
+            out = subprocess.check_output(command, shell=True, stderr=shutup)
+            out = out.splitlines()
+            return out
     except subprocess.CalledProcessError:
         # squeue is not available
         return []
 
 
-def queued_or_running_jobs():
+def queued_or_running_jobs(user=None):
     """Return the names of the queued or running jobs under SGE and SLURM
 
     The list of jobs could be either the list of all jobs on the scheduler
@@ -51,6 +64,11 @@ def queued_or_running_jobs():
     The default behavior is dependant upon scheduler configuration.
     Try ``qstat`` in SGE or ``squeue`` in SLURM to know which behavior it
     follows.
+
+    Parameters
+    ----------
+    user : str or None, (default=None)
+        Filter the job list using a given user name.
 
     Returns
     -------
@@ -62,7 +80,7 @@ def queued_or_running_jobs():
     out = []
     for queued_or_running in (_sge_queued_or_running_jobs,
                               _slurm_queued_or_running_jobs):
-        out.extend(queued_or_running())
+        out.extend(queued_or_running(user=user))
 
     return out
 

@@ -16,22 +16,15 @@ from nose import SkipTest
 
 from ..scheduler import queued_or_running_jobs
 from ..scheduler import submit
+from ..scheduler import _which
 
 
 def test_queued_or_running_jobs_slurm():
     """Test queued or running job function on slurm"""
 
     # Check that slurm is installed
-    with open(os.devnull, 'w') as shutup:
-        try:
-            has_sbatch = 1 - subprocess.check_call(["which", "sbatch"],
-                                                   stdout=shutup, stderr=shutup)
-        except subprocess.CalledProcessError:
-            has_sbatch = 0
-
-        if not has_sbatch:
-            raise SkipTest("sbatch is missing")
-
+    if _which('sbatch') is None:
+        raise SkipTest("sbatch (SLURM) is missing")
 
     user = getuser()
     job_name = "test-sleepy-job"

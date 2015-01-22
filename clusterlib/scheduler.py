@@ -24,6 +24,52 @@ __all__ = [
 ]
 
 
+def _which(program):
+    """Check the presence of an executable in the PATH
+
+    Credits: http://stackoverflow.com/questions/377017
+    """
+    def is_exe(fpath):
+        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+
+    fpath, fname = os.path.split(program)
+    if fpath:
+        if is_exe(program):
+            return program
+    else:
+        for path in os.environ["PATH"].split(os.pathsep):
+            path = path.strip('"')
+            exe_file = os.path.join(path, program)
+            if is_exe(exe_file):
+                return exe_file
+    return None
+
+
+def _get_backend(backend="auto"):
+    """Detect the backend to use based on the commands present in the PATH"""
+    backend_commands = (
+        ('slurm', 'squeue'),
+        ('sge', 'qstat'),
+    )
+    if backend == "auto":
+        # If backend is auto, check that it is not configured explicitly
+        # in a dedicated environment variable
+        backend = os.environ.get('CLUSTERLIB_BACKEND', 'auto').lower()
+
+    if backend == "auto":
+        # lookup the command for a suitable backend by order of preference
+        for backend_name, backend_cmd in backend_commands:
+            if _which(backend_cmd) is not None:
+                return backend_name
+        raise RuntimeError("Could not find any suitable backend: %s"
+                           % ", ".join(b for b, c in backend_commands))
+
+    backend_cmd = dict(backend_commands).get(backend)
+    if backend_cmd is None:
+        raise ValueError("Unsupported backend: '%s'" % backend)
+    return backend
+
+
 def _sge_queued_or_running_jobs(user=None):
     """Get queued or running jobs from SGE queue system"""
     command = "qstat -xml"
@@ -115,7 +161,7 @@ _LAUNCHER = {
 
 
 def submit(job_command, job_name="job", time="24:00:00", memory=4000,
-           email=None, email_options=None, log_directory=None, backend="slurm",
+           email=None, email_options=None, log_directory=None, backend="auto",
            shell_script="#!/bin/bash"):
     """Write the submission query (without script)
 
@@ -146,8 +192,10 @@ def submit(job_command, job_name="job", time="24:00:00", memory=4000,
     log_directory : str, optional (default=None)
         Specify the log directory. If None, no log directory is specified.
 
-    backend : {'sge', 'slurm'}, optional (default="slurm")
-        Backend where the job will be submitted
+    backend : {'auto', 'slurm', 'sge'}, optional (default="auto")
+        Backend where the job will be submitted. If 'auto', try detect
+        the backend to use based on the commands available in the PATH
+        variable.
 
     shell_script : str, optional (default="#!/bin/bash")
         Specify shell that is used by the script.
@@ -165,7 +213,7 @@ def submit(job_command, job_name="job", time="24:00:00", memory=4000,
     ``main.py``.
 
     >>> from clusterlib.scheduler import submit
-    >>> script = submit("python main.py --args 1")
+    >>> script = submit("python main.py --args 1", backend='slurm')
     >>> print(script)
     echo '#!/bin/bash
     python main.py --args 1' | sbatch --job-name=job --time=24:00:00 --mem=4000
@@ -173,6 +221,7 @@ def submit(job_command, job_name="job", time="24:00:00", memory=4000,
     The job can be latter launched using for instance ``os.system(script)``.
 
     """
+    backend = _get_backend(backend)
     if backend in _TEMPLATE:
         launcher = _LAUNCHER[backend]
         template = _TEMPLATE[backend]

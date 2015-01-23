@@ -9,6 +9,7 @@ env:
   matrix:
     - SCHEDULER="None"
     - SCHEDULER="SLURM"
+    - SCHEDULER="SGE"
 # command to run tests
 script: make
 after_success: coveralls

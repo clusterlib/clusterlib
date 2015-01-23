@@ -23,8 +23,11 @@ def test_queued_or_running_jobs_slurm():
 
     # Check that slurm is installed
     with open(os.devnull, 'w') as shutup:
-        has_sbatch = 1 - subprocess.check_call(["which", "sbatch"],
-                                               stdout=shutup, stderr=shutup)
+        try:
+            has_sbatch = 1 - subprocess.check_call(["which", "sbatch"],
+                                                   stdout=shutup, stderr=shutup)
+        except subprocess.CalledProcessError:
+            has_sbatch = 0
 
         if not has_sbatch:
             raise SkipTest("sbatch is missing")

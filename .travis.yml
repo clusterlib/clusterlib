@@ -4,16 +4,11 @@ python:
   - "3.3"
   - "3.4"
 # command to install dependencies
-install:
-  # Install package and its dependency for full test
-  - "pip install coverage coveralls"
-  - "pip install sphinx_bootstrap_theme"
-  # Install slurm
-  - "sudo apt-get install slurm-llnl "
-  - "sudo /usr/sbin/create-munge-key"
-  - "sudo service munge start"
-  - "sudo python continuous_integration/configure_slurm.py"
-
+install: source continuous_integration/install.sh
+env:
+  matrix:
+    - SCHEDULER="None"
+    - SCHEDULER="SLURM"
 # command to run tests
 script: make
 after_success: coveralls

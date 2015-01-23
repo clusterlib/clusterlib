@@ -21,54 +21,55 @@ from ..scheduler import submit
 def test_queued_or_running_jobs_slurm():
     """Test queued or running job function on slurm"""
 
+    # Check that slurm is installed
     with open(os.devnull, 'w') as shutup:
         has_sbatch = 1 - subprocess.check_call(["which", "sbatch"],
                                                stdout=shutup, stderr=shutup)
 
-    if has_sbatch:
-        user = getuser()
-        job_name = "test-sleepy-job"
+        if not has_sbatch:
+            raise SkipTest("sbatch is missing")
 
-        # Launch a sleepy slurm job
-        sleep_job = submit(job_command="sleep 600", job_name=job_name,
-                           backend="slurm", time="10:00", memory=100)
-        os.system(sleep_job)
 
-        # Get job id
-        job_id = None
-        try:
-            out = subprocess.check_output(
-                "squeue --noheader -o '%j %i' -u {0} | grep {1}"
-                "".format(user, job_name),
-                shell=True)
-            job_id = out.split()[-1]
+    user = getuser()
+    job_name = "test-sleepy-job"
 
-        except subprocess.CalledProcessError as error:
-            print(error.output)
-            raise
+    # Launch a sleepy slurm job
+    sleep_job = submit(job_command="sleep 600", job_name=job_name,
+                       backend="slurm", time="10:00", memory=100)
+    os.system(sleep_job)
 
-        # Assert that the job has been launched
-        try:
-            running_jobs = queued_or_running_jobs(user=user)
-            if sys.version_info[0] == 3:
-                # the bytes should be decoded before, right after you read them
-                # (e.g. from a socket or a file). In Python 2 is done
-                # implicitly with a random (platform specific) encoding.
-                # In Python 3 youhave to decode bytes objects into unicode
-                # string explicitly with an appropriate encoding depending on
-                # where the bytes come from.
+    # Get job id
+    job_id = None
+    try:
+        out = subprocess.check_output(
+            "squeue --noheader -o '%j %i' -u {0} | grep {1}"
+            "".format(user, job_name),
+            shell=True)
+        job_id = out.split()[-1]
 
-                running_jobs = [s.decode("utf8") for s in running_jobs]
+    except subprocess.CalledProcessError as error:
+        print(error.output)
+        raise
 
-            assert_in(job_name, running_jobs)
-        finally:
-            # Make sure to clean up even if there is a failure
-            os.system("scancel %s" % job_id)
-            if os.path.exists("slurm-%s.out" % job_id):
-                os.remove("slurm-%s.out" % job_id)
+    # Assert that the job has been launched
+    try:
+        running_jobs = queued_or_running_jobs(user=user)
+        if sys.version_info[0] == 3:
+            # the bytes should be decoded before, right after you read them
+            # (e.g. from a socket or a file). In Python 2 is done
+            # implicitly with a random (platform specific) encoding.
+            # In Python 3 youhave to decode bytes objects into unicode
+            # string explicitly with an appropriate encoding depending on
+            # where the bytes come from.
 
-    else:
-        raise SkipTest("sbatch is missing")
+            running_jobs = [s.decode("utf8") for s in running_jobs]
+
+        assert_in(job_name, running_jobs)
+    finally:
+        # Make sure to clean up even if there is a failure
+        os.system("scancel %s" % job_id)
+        if os.path.exists("slurm-%s.out" % job_id):
+            os.remove("slurm-%s.out" % job_id)
 
 
 def test_submit():

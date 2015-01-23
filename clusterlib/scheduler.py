@@ -201,7 +201,9 @@ def submit(job_command, job_name="job", time="24:00:00", memory=4000,
     backend : {'auto', 'slurm', 'sge'}, optional (default="auto")
         Backend where the job will be submitted. If 'auto', try detect
         the backend to use based on the commands available in the PATH
-        variable.
+        variable looking first for 'slurm' and then for 'sge' if slurm is
+        not found. The default backend selected when backend='auto' can also
+        be fixed by setting the "CLUSTERLIB_BACKEND" environment variable.
 
     shell_script : str, optional (default="#!/bin/bash")
         Specify shell that is used by the script.

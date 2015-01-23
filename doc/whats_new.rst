@@ -8,7 +8,13 @@ dev
 
 Changelog
 ---------
+    - Add travis workers with SLURM. By `Arnaud Joly`_
 
+    - Fix possible deadlock occurence due to the use ``subprocess.PIPE``.
+      By `Arnaud Joly`_
+
+    - Add the possibility to specify a user in
+      :func:`scheduler.queued_or_running_jobs`. By `Arnaud Joly`_
 
 0.1
 ===

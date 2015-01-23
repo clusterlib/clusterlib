@@ -16,6 +16,10 @@ Changelog
     - Add the possibility to specify a user in
       :func:`scheduler.queued_or_running_jobs`. By `Arnaud Joly`_
 
+    - Automate the detection of the scheduler based on the commands available
+      in the ``PATH`` with ``backend='auto'`` (enabled by default).
+      By `Olivier Grisel`_
+
 0.1
 ===
 
@@ -47,3 +51,4 @@ Changelog
 
 .. _Arnaud Joly: http://www.ajoly.org
 
+.. _Olivier Grisel: http://ogrisel.com

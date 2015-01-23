@@ -14,6 +14,7 @@ Main functions covered are :
 from __future__ import unicode_literals
 
 import os
+import shutil
 import subprocess
 from xml.etree import ElementTree
 
@@ -29,6 +30,11 @@ def _which(program):
 
     Credits: http://stackoverflow.com/questions/377017
     """
+    if hasattr(shutil, 'which'):
+        # Use the stdlib implementation under Python 3
+        return shutil.which(program)
+
+    # Backward compat for Python 2
     def is_exe(fpath):
         return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
 

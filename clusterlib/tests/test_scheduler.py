@@ -17,6 +17,48 @@ from nose import SkipTest
 from ..scheduler import queued_or_running_jobs
 from ..scheduler import submit
 from ..scheduler import _which
+from ..scheduler import _get_backend
+
+
+def test_auto_backend():
+    """Check the backend detection logic"""
+    original_env_backend = os.environ.get('CLUSTERLIB_BACKEND', None)
+    if original_env_backend is not None:
+        del os.environ['CLUSTERLIB_BACKEND']
+    try:
+        # Check detection when no environment variable is set.
+        if _which('sbatch'):
+            # SLURM should be detected
+            assert_equal(_get_backend('auto'), 'slurm')
+        elif _which('qsub'):
+            # SGE should be detected
+            assert_equal(_get_backend('auto'), 'sge')
+        else:
+            # No backend can be detected
+            assert_raises(RuntimeError, _get_backend, 'auto')
+
+        # Check the use of the environment variable
+        os.environ['CLUSTERLIB_BACKEND'] = 'slurm'
+        assert_equal(_get_backend('auto'), 'slurm')
+
+        os.environ['CLUSTERLIB_BACKEND'] = 'sge'
+        assert_equal(_get_backend('auto'), 'sge')
+    finally:
+        # Restore the previous environment
+        if original_env_backend is None:
+            del os.environ['CLUSTERLIB_BACKEND']
+        else:
+            os.environ['CLUSTERLIB_BACKEND'] = original_env_backend
+
+
+def test_fixed_backend():
+    """Check that it is possible to fix explicit backends (when valid)"""
+    # Supported backends
+    assert_equal(_get_backend('slurm'), 'slurm')
+    assert_equal(_get_backend('sge'), 'sge')
+
+    # Unsupported backend
+    assert_raises(ValueError, _get_backend, 'hadoop')
 
 
 def test_queued_or_running_jobs_slurm():

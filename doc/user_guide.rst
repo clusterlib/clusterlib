@@ -150,6 +150,26 @@ or that are not running or queued.
 This simple launcher allows to manage thousands of jobs while avoiding
 to repeat jobs that are processed or in process.
 
+
+Choosing the backend implementation
+-----------------------------------
+
+By default ``clusterlib`` will try to automatically detect the presence of the
+scheduler commands in the following order:
+
+- SLURM
+- SGE
+
+If both schedulers are installed on the cluster, it is possible to explicitly
+pass ``backend='slurm'`` or ``backend='sge'`` to the ``submit`` function.
+
+Alternatively it is also possible to set the default backend by setting the
+``CLUSTERLIB_BACKEND`` environment variable, for instance by adding the
+following line in the ``~/.bashrc`` file of the user that starts the job::
+
+    export CLUSTERLIB_BACKEND=slurm
+
+
 More tips when working on a super-computer
 -----------------------------------------
 

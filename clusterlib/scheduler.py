@@ -78,32 +78,32 @@ def _get_backend(backend="auto"):
 
 def _sge_queued_or_running_jobs(user=None):
     """Get queued or running jobs from SGE queue system"""
-    command = "qstat -xml"
+    command = ["qstat", "-xml"]
     if user is not None:
-        command += " -u {}".format(user)
+        command.extend(["-u", user])
 
     try:
         with open(os.devnull, 'w') as shutup:
-            xml = subprocess.check_output(command, shell=True, stderr=shutup)
+            xml = subprocess.check_output(command, stderr=shutup)
             tree = ElementTree.fromstring(xml)
             return [leaf.text for leaf in tree.iter("JB_name")]
-    except subprocess.CalledProcessError:
+    except OSError:
         # qstat is not available
         return []
 
 
 def _slurm_queued_or_running_jobs(user=None):
     """Get queued or running jobs from SLURM queue system"""
-    command = "squeue --noheader -o %j"
+    command = ["squeue", "--noheader", "-o", "%j"]
     if user is not None:
-        command += " -u {}".format(user)
+        command.extend(["-u", user])
 
     try:
         with open(os.devnull, 'w') as shutup:
-            out = subprocess.check_output(command, shell=True, stderr=shutup)
+            out = subprocess.check_output(command, stderr=shutup)
             out = out.splitlines()
             return out
-    except subprocess.CalledProcessError:
+    except OSError:
         # squeue is not available
         return []
 

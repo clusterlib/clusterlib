@@ -63,7 +63,7 @@ def test_fixed_backend():
 
 def test_queued_or_running_jobs_no_backend():
 
-    if (_which('qsub') is not None and
+    if (_which('qsub') is not None or
             _which('sbatch') is not None):
         raise SkipTest("This platform has either slurm or sge installed")
 
@@ -84,17 +84,17 @@ def test_queued_or_running_jobs_sge():
                        backend="sge", time="700", memory=100)
     os.system(sleep_job)
 
-   # Get job id
+    # Get job id
     job_id = None
     try:
-        out = subprocess.check_output("qstat -xml -u {0}".format(user),
-            shell=True)
+        out = subprocess.check_output(["qstat", "-xml", "-u", user, "-j",
+                                       job_name])
         tree = ElementTree.fromstring(out)
-        job_id = [id_.text
-                   for id_, name in  zip(tree.iter("JB_job_number"),
-                                         tree.iter("JB_name"))
-                   if name.text == job_name]
-        job_id = job_id[0]
+        for id_, name in zip(tree.iter("JB_job_number"),
+                             tree.iter("JB_name")):
+            if name.text == job_name:
+                job_id = id_.text[0]
+                break
 
     except subprocess.CalledProcessError as error:
         print(error.output)
@@ -106,7 +106,8 @@ def test_queued_or_running_jobs_sge():
         assert_in(job_name, running_jobs)
     finally:
         # Make sure to clean up even if there is a failure
-        os.system("qdel %s" % job_id)
+        if job_id is not None:
+            os.system("qdel %s" % job_id)
         if os.path.exists("%s.%s" % (job_name, job_id)):
             os.remove("%s.%s" % (job_name, job_id))
 
@@ -129,11 +130,16 @@ def test_queued_or_running_jobs_slurm():
     # Get job id
     job_id = None
     try:
-        out = subprocess.check_output(
-            "squeue --noheader -o '%j %i' -u {0} | grep {1}"
-            "".format(user, job_name),
-            shell=True)
-        job_id = out.split()[-1]
+        out = subprocess.check_output(['squeue', '--noheader', '-o', '%j %i',
+                                       '-u', user])
+        for line in out.splitlines():
+            if sys.version_info[0] == 3:
+                line = line.decode("utf8")
+            name, id_ = line.split()
+
+            if job_name == name:
+                job_id = id_
+                break
 
     except subprocess.CalledProcessError as error:
         print(error.output)
@@ -155,7 +161,8 @@ def test_queued_or_running_jobs_slurm():
         assert_in(job_name, running_jobs)
     finally:
         # Make sure to clean up even if there is a failure
-        os.system("scancel %s" % job_id)
+        if job_id is not None:
+            os.system("scancel %s" % job_id)
         if os.path.exists("slurm-%s.out" % job_id):
             os.remove("slurm-%s.out" % job_id)
 

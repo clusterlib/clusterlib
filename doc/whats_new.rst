@@ -8,7 +8,9 @@ dev
 
 Changelog
 ---------
-    - Add travis workers with SLURM. By `Arnaud Joly`_
+    - Add a travis workers with SLURM. By `Arnaud Joly`_
+
+    - Add a travis workers with SGE. By `Arnaud Joly`_
 
     - Fix possible deadlock occurence due to the use ``subprocess.PIPE``.
       By `Arnaud Joly`_

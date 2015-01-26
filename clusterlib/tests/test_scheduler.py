@@ -107,7 +107,7 @@ def test_queued_or_running_jobs_sge():
     finally:
         # Make sure to clean up even if there is a failure
         if job_id is not None:
-            os.system("qdel %s" % job_id)
+            subprocess.call(["qdel", job_id])
         if os.path.exists("%s.%s" % (job_name, job_id)):
             os.remove("%s.%s" % (job_name, job_id))
 
@@ -162,7 +162,8 @@ def test_queued_or_running_jobs_slurm():
     finally:
         # Make sure to clean up even if there is a failure
         if job_id is not None:
-            os.system("scancel %s" % job_id)
+            subprocess.call(["scancel", job_id])
+
         if os.path.exists("slurm-%s.out" % job_id):
             os.remove("slurm-%s.out" % job_id)
 

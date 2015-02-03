@@ -5,9 +5,8 @@ from __future__ import unicode_literals
 
 import os
 import subprocess
-import sys
 from getpass import getuser
-from xml.etree import ElementTree
+from xml.etree.ElementTree import XMLParser, XML
 
 from nose.tools import assert_equal
 from nose.tools import assert_raises
@@ -70,26 +69,25 @@ def test_queued_or_running_jobs_no_backend():
     assert_equal(queued_or_running_jobs(), [])
 
 
-def test_queued_or_running_jobs_sge():
-    """Test queued or running job function on sge"""
-    # Check that slurm is installed
+def check_job_name_queued_or_running_sge(job_name):
+    # Check that SGE is installed
     if _which('qsub') is None:
         raise SkipTest("qsub (sge) is missing")
 
     user = getuser()
-    job_name = "test-sleepy-job"
-
     # Launch a sleepy slurm job
     sleep_job = submit(job_command="sleep 600", job_name=job_name,
                        backend="sge", time="700", memory=100)
-    os.system(sleep_job)
+
+    # Encoding to UTF-8 is required when passing job_name with non-ASCII chars
+    os.system(sleep_job.encode('utf-8'))
 
     # Get job id
     job_id = None
     try:
         out = subprocess.check_output(["qstat", "-xml", "-u", user, "-j",
                                        job_name])
-        tree = ElementTree.fromstring(out)
+        tree = XML(out, parser=XMLParser(encoding='utf-8'))
         for id_, name in zip(tree.iter("JB_job_number"),
                              tree.iter("JB_name")):
             if name.text == job_name:
@@ -112,7 +110,7 @@ def test_queued_or_running_jobs_sge():
             os.remove("%s.%s" % (job_name, job_id))
 
 
-def test_queued_or_running_jobs_slurm():
+def check_job_name_queued_or_running_slurm(job_name):
     """Test queued or running job function on slurm"""
 
     # Check that slurm is installed
@@ -120,12 +118,13 @@ def test_queued_or_running_jobs_slurm():
         raise SkipTest("sbatch (SLURM) is missing")
 
     user = getuser()
-    job_name = "test-sleepy-job"
 
     # Launch a sleepy slurm job
     sleep_job = submit(job_command="sleep 600", job_name=job_name,
                        backend="slurm", time="10:00", memory=100)
-    os.system(sleep_job)
+
+    # Encoding to UTF-8 is required when passing job_name with non-ASCII chars
+    os.system(sleep_job.encode('utf-8'))
 
     # Get job id
     job_id = None
@@ -133,9 +132,7 @@ def test_queued_or_running_jobs_slurm():
         out = subprocess.check_output(['squeue', '--noheader', '-o', '%j %i',
                                        '-u', user])
         for line in out.splitlines():
-            if sys.version_info[0] == 3:
-                line = line.decode("utf8")
-            name, id_ = line.split()
+            name, id_ = line.decode("utf8").split()
 
             if job_name == name:
                 job_id = id_
@@ -148,16 +145,6 @@ def test_queued_or_running_jobs_slurm():
     # Assert that the job has been launched
     try:
         running_jobs = queued_or_running_jobs(user=user)
-        if sys.version_info[0] == 3:
-            # the bytes should be decoded before, right after you read them
-            # (e.g. from a socket or a file). In Python 2 is done
-            # implicitly with a random (platform specific) encoding.
-            # In Python 3 youhave to decode bytes objects into unicode
-            # string explicitly with an appropriate encoding depending on
-            # where the bytes come from.
-
-            running_jobs = [s.decode("utf8") for s in running_jobs]
-
         assert_in(job_name, running_jobs)
     finally:
         # Make sure to clean up even if there is a failure
@@ -166,6 +153,14 @@ def test_queued_or_running_jobs_slurm():
 
         if os.path.exists("slurm-%s.out" % job_id):
             os.remove("slurm-%s.out" % job_id)
+
+
+def test_queued_or_running_jobs():
+    """Test queued or running job function on sge and slurm"""
+
+    for job_name in ["test-sleepy-job", u'test-unicode-sl\xe9\xe9py-job']:
+        yield check_job_name_queued_or_running_sge, job_name
+        yield check_job_name_queued_or_running_slurm, job_name
 
 
 def test_submit():

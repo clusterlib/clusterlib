@@ -22,6 +22,9 @@ Changelog
       in the ``PATH`` with ``backend='auto'`` (enabled by default).
       By `Olivier Grisel`_
 
+    - Make `queued_or_running_jobs` return decoded job names (unicode strings
+      instead of byte strings). By `Olivier Grisel`_
+
 0.1
 ===
 

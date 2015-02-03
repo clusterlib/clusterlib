@@ -16,7 +16,7 @@ from __future__ import unicode_literals
 import os
 import shutil
 import subprocess
-from xml.etree import ElementTree
+from xml.etree.ElementTree import XMLParser, XML
 
 
 __all__ = [
@@ -76,7 +76,7 @@ def _get_backend(backend="auto"):
     return backend
 
 
-def _sge_queued_or_running_jobs(user=None):
+def _sge_queued_or_running_jobs(user=None, encoding='utf-8'):
     """Get queued or running jobs from SGE queue system"""
     command = ["qstat", "-xml"]
     if user is not None:
@@ -85,14 +85,14 @@ def _sge_queued_or_running_jobs(user=None):
     try:
         with open(os.devnull, 'w') as shutup:
             xml = subprocess.check_output(command, stderr=shutup)
-            tree = ElementTree.fromstring(xml)
+            tree = XML(xml, parser=XMLParser(encoding=encoding))
             return [leaf.text for leaf in tree.iter("JB_name")]
     except OSError:
         # qstat is not available
         return []
 
 
-def _slurm_queued_or_running_jobs(user=None):
+def _slurm_queued_or_running_jobs(user=None, encoding='utf-8'):
     """Get queued or running jobs from SLURM queue system"""
     command = ["squeue", "--noheader", "-o", "%j"]
     if user is not None:
@@ -101,14 +101,13 @@ def _slurm_queued_or_running_jobs(user=None):
     try:
         with open(os.devnull, 'w') as shutup:
             out = subprocess.check_output(command, stderr=shutup)
-            out = out.splitlines()
-            return out
+            return out.decode(encoding).splitlines()
     except OSError:
         # squeue is not available
         return []
 
 
-def queued_or_running_jobs(user=None):
+def queued_or_running_jobs(user=None, encoding='utf-8'):
     """Return the names of the queued or running jobs under SGE and SLURM
 
     The list of jobs could be either the list of all jobs on the scheduler
@@ -122,6 +121,12 @@ def queued_or_running_jobs(user=None):
     user : str or None, (default=None)
         Filter the job list using a given user name.
 
+    encoding : str, (default='utf-8')
+        Encoding to decode the job names. UTF-8 is the default encoding of
+        Linux systems so job names that contain non-ASCII characters should be
+        decoded properly with the default value. In case their are not it is
+        possible to change this parameter to select the right encoding.
+
     Returns
     -------
     out : list of string,
@@ -132,7 +137,7 @@ def queued_or_running_jobs(user=None):
     out = []
     for queued_or_running in (_sge_queued_or_running_jobs,
                               _slurm_queued_or_running_jobs):
-        out.extend(queued_or_running(user=user))
+        out.extend(queued_or_running(user=user, encoding=encoding))
 
     return out
 
@@ -258,7 +263,7 @@ def submit(job_command, job_name="job", time="24:00:00", memory=4000,
 
     # Using echo job_commands | launcher job_options allows to avoid creating
     # a script file. The script is indeed created on the flight.
-    command = ("echo '%s\n%s' | %s %s"
+    command = (u"echo '%s\n%s' | %s %s"
                % (shell_script, job_command, launcher, " ".join(job_options)))
 
     return command

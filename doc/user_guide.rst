@@ -61,8 +61,12 @@ everything in Python without any of the previous drawbacks::
     srun hostname' | sbatch --job-name=job-name --time=10:00 --mem=1000
 
 Launching the job with the generated submission ``script`` can be done
-directly by using ``os.system(script)`` or with the Python ``subprocess``
-submodule.
+directly by using ``os.system(script.encode('utf-8'))`` or with the Python
+``subprocess`` submodule.
+
+Note that we explicitly encoded the script to `utf-8` before passing it to
+`os.system`. This is required if you pass a `command` or `job_name`
+with non-ASCII characters.
 
 More options to the submission script could be appended to the generated
 string. Here for instance, we add the quiet sbatch option::
@@ -111,7 +115,7 @@ are already queued or running.
                 script = submit("./main --param %s" % param,
                                 job_name=job_name, backend="slurm")
 
-                os.system(script)
+                os.system(script.encode('utf-8'))
 
 Here we have constructed unique job names with a string formatting. As an
 alternative, one can generate hash of the job parameters to have automatically

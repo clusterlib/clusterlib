@@ -7,7 +7,7 @@
 # License: 3-clause BSD
 
 
-set -e # Exit on first error
+set -xe # Exit on first error
 
 # Install dependency for full test
 pip install coverage coveralls
@@ -21,38 +21,49 @@ if [[ "$SCHEDULER" == "SLURM" ]]; then
     sudo python continuous_integration/configure_slurm.py
 
 elif [[ "$SCHEDULER" == "SGE" ]]; then
-    # The following lines are taken from BSD 3 project from
+    # The following lines are adapted from the BSD 3 licensed project at:
     # https://github.com/drmaa-python/drmaa-python
+    export SGE_ROOT=/var/lib/gridengine
+    export SGE_CELL=default
+    export USER=$(id -u -n)
+    export CORES=$(grep -c '^processor' /proc/cpuinfo)
 
     cd continuous_integration/sge
-
     sudo sed -i -r "s/^(127.0.0.1\s)(localhost\.localdomain\slocalhost)/\1localhost localhost.localdomain $(hostname) /" /etc/hosts
+    sudo sed -i -r '/^(127.0.1.1)/d' /etc/hosts
+    cat /etc/hosts
+
     sudo apt-get update -qq
     echo "gridengine-master shared/gridenginemaster string localhost" | sudo debconf-set-selections
     echo "gridengine-master shared/gridenginecell string default" | sudo debconf-set-selections
     echo "gridengine-master shared/gridengineconfig boolean true" | sudo debconf-set-selections
     sudo apt-get install gridengine-common gridengine-master
+    sleep 5
     # Do this in a separate step to give master time to start
-    sudo apt-get install libdrmaa1.0 gridengine-client gridengine-exec
-    export CORES=$(grep -c '^processor' /proc/cpuinfo)
+    sudo apt-get install  gridengine-client gridengine-exec
+    sleep 5
+
     sed -i -r "s/template/$USER/" user_template
     sudo qconf -Auser user_template
     sudo qconf -au $USER arusers
     sudo qconf -as localhost
-    export LOCALHOST_IN_SEL=$(qconf -sel | grep -c 'localhost')
-    if [ $LOCALHOST_IN_SEL != "1" ]; then sudo qconf -Ae host_template; else sudo qconf -Me host_template; fi
+    sudo qconf -as $(hostname)
+
+    sudo qconf -Me host_template
     sed -i -r "s/UNDEFINED/$CORES/" queue_template
     sudo qconf -Ap smp_template
     sudo qconf -Aq queue_template
+    sudo qconf -as $(hostname)
+
+    # Check that worker node is up and running:
+    echo "Show registered exechost info:"
+    qconf -sel
+    qhost
     echo "Printing queue info to verify that things are working correctly."
     qstat -f -q all.q -explain a
     echo "You should see sge_execd and sge_qmaster running below:"
     ps aux | grep "sge"
-
+    echo "Check that the qmaster logs look fine"
+    cat /var/spool/gridengine/qmaster/messages
     cd ../..
-
-    export SGE_ROOT=/var/lib/gridengine
-    export SGE_CELL=default
-    export DRMAA_LIBRARY_PATH=/usr/lib/libdrmaa.so.1.0
-
  fi

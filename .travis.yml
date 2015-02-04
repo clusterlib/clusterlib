@@ -7,10 +7,12 @@ python:
 install: source continuous_integration/install.sh
 env:
   matrix:
-    - SCHEDULER="None"
     - SCHEDULER="SLURM"
     - SCHEDULER="SGE"
+    - SCHEDULER="NONE"
 # command to run tests
-script: make
-after_success: coveralls
+script: 
+  - make 
+#  - source continuous_integration/get_debug.sh
+after_success: coveralls  
 cache: apt

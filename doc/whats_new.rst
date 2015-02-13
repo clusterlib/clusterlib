@@ -8,7 +8,8 @@ dev
 
 Changelog
 ---------
-    - Add a travis workers with SLURM. By `Arnaud Joly`_
+    - Add a travis workers with SLURM. By `Arnaud Joly`_ and
+      `Olivier Grisel`_.
 
     - Add a travis workers with SGE. By `Arnaud Joly`_
 

@@ -8,8 +8,8 @@ dev
 
 Changelog
 ---------
-    - Add a travis workers with SLURM. By `Arnaud Joly`_ and
-      `Olivier Grisel`_.
+    - Add a travis workers with SLURM. By `Arnaud Joly`_, `Konstantin Petrov`_,
+      `Olivier Grisel`_ and `Loic Esteve`_
 
     - Add a travis workers with SGE. By `Arnaud Joly`_
 
@@ -58,3 +58,7 @@ Changelog
 .. _Arnaud Joly: http://www.ajoly.org
 
 .. _Olivier Grisel: http://ogrisel.com
+
+.. _Konstantin Petrov: http://github.com/kpetrov
+
+.. _Loic Esteve: http://github.com/lesteve

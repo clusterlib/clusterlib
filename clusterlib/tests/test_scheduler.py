@@ -204,16 +204,16 @@ def test_submit():
         '-l h_rt=24:00:00 -l h_vmem=4000M -M test@test.com -m beas')
 
     assert_equal(
-        submit(job_command="python main.py", log_directory="path/test",
+        submit(job_command="python main.py", log_directory="/path/test",
                backend="sge"),
         'echo \'#!/bin/bash\npython main.py\' | qsub -N "job" '
         '-l h_rt=24:00:00 -l h_vmem=4000M -j y '
-        '-o \'path/test/$JOB_NAME.$JOB_ID.txt\'')
+        '-o \'/path/test/$JOB_NAME.$JOB_ID.txt\'')
 
     assert_equal(
-        submit(job_command="python main.py", log_directory="path/test",
+        submit(job_command="python main.py", log_directory="/path/test",
                backend="slurm"),
         "echo \'#!/bin/bash\npython main.py\' | sbatch --job-name=job "
-        "--time=24:00:00 --mem=4000 -o path/test/job.%j.txt")
+        "--time=24:00:00 --mem=4000 -o /path/test/job.%j.txt")
 
     assert_raises(ValueError, submit, job_command="", backend="unknown")

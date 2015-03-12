@@ -4,19 +4,40 @@
 from __future__ import unicode_literals
 
 import os
+import os.path as op
+from time import sleep
 import subprocess
 from getpass import getuser
-from xml.etree.ElementTree import XMLParser, XML
 
 from nose.tools import assert_equal
 from nose.tools import assert_raises
 from nose.tools import assert_in
 from nose import SkipTest
 
-from ..scheduler import queued_or_running_jobs
-from ..scheduler import submit
-from ..scheduler import _which
-from ..scheduler import _get_backend
+from clusterlib.scheduler import queued_or_running_jobs
+from clusterlib.scheduler import submit
+from clusterlib.scheduler import _which
+from clusterlib.scheduler import _get_backend
+from clusterlib.testing import TemporaryDirectory
+
+
+def _do_dispatch(*args, **kwargs):
+    """Perform a dispatch with the submit command and return the job id"""
+    # TODO: This utility function should be properly documented any made more
+    # robust to be included in the scheduler module itself
+    cmd = submit(*args, **kwargs)
+    cmd_encoding = 'utf-8'
+    output = subprocess.check_output(
+        cmd.encode(cmd_encoding), shell=True).decode(cmd_encoding)
+    if output.startswith(u'Your job '):
+        job_id = output.split()[2]
+    elif output.startswith(u'Submitted batch job '):
+        job_id = output.split()[3]
+    else:
+        raise RuntimeError(
+            u"Failed to parse job_id from command output:\n %s\ncmd:\n%s"
+            % (cmd, output))
+    return job_id
 
 
 def test_auto_backend():
@@ -69,45 +90,61 @@ def test_queued_or_running_jobs_no_backend():
     assert_equal(queued_or_running_jobs(), [])
 
 
-def check_job_name_queued_or_running_sge(job_name):
+def test_log_output_sge():
     # Check that SGE is installed
     if _which('qmod') is None:
         raise SkipTest("qmod (sge) is missing")
 
-    user = getuser()
-    # Launch a sleepy slurm job
-    sleep_job = submit(job_command="sleep 600", job_name=job_name,
-                       backend="sge", time="700", memory=100)
+    with TemporaryDirectory() as temp_folder:
 
-    # Encoding to UTF-8 is required when passing job_name with non-ASCII chars
-    os.system(sleep_job.encode('utf-8'))
+        user = getuser()
+        job_completed = False
+        # Launch a sleepy SGE job
+        job_name = 'ok_job'
+        job_id = _do_dispatch(job_command="echo ok", job_name=job_name,
+                              backend="sge", time="700", memory=500,
+                              log_directory=temp_folder)
+        try:
+            for i in range(10):
+                if job_name not in queued_or_running_jobs(user=user):
+                    # job has completed, let's check the output
+                    job_completed = True
+                    filename = "%s.%s.txt" % (job_name, job_id)
+                    assert_equal(os.listdir(temp_folder), [filename])
+                    with open(op.join(temp_folder, filename)) as f:
+                        assert_equal(f.read().strip(), "ok")
+                    break
+                else:
+                    # Let's wait a bit before retrying
+                    sleep(10)
 
-    # Get job id
-    job_id = None
-    try:
-        out = subprocess.check_output(["qstat", "-xml", "-u", user, "-j",
-                                       job_name])
-        tree = XML(out, parser=XMLParser(encoding='utf-8'))
-        for id_, name in zip(tree.iter("JB_job_number"),
-                             tree.iter("JB_name")):
-            if name.text == job_name:
-                job_id = id_.text[0]
-                break
+        finally:
+            # Make sure to clean up even if there is a failure
+            if not job_completed:
+                subprocess.call(["qdel", job_id])
+                raise AssertionError("job %s (%s) has not completed."
+                                     % (job_id, job_name))
 
-    except subprocess.CalledProcessError as error:
-        print(error.output)
-        raise
 
-    # Assert that the job has been launched
-    try:
-        running_jobs = queued_or_running_jobs(user=user)
-        assert_in(job_name, running_jobs)
-    finally:
-        # Make sure to clean up even if there is a failure
-        if job_id is not None:
+def check_job_name_queued_or_running_sge(job_name):
+    # Check that SGE is installed
+    if _which('qsub') is None:
+        raise SkipTest("qsub (sge) is missing")
+
+    with TemporaryDirectory() as temp_folder:
+
+        user = getuser()
+        # Launch a sleepy SGE job
+        job_id = _do_dispatch(job_command="sleep 600", job_name=job_name,
+                              backend="sge", time="700", memory=500,
+                              log_directory=temp_folder)
+        # Assert that the job has been launched
+        try:
+            running_jobs = queued_or_running_jobs(user=user)
+            assert_in(job_name, running_jobs)
+        finally:
+            # Make sure to clean up even if there is a failure
             subprocess.call(["qdel", job_id])
-        if os.path.exists("%s.%s" % (job_name, job_id)):
-            os.remove("%s.%s" % (job_name, job_id))
 
 
 def check_job_name_queued_or_running_slurm(job_name):
@@ -118,41 +155,19 @@ def check_job_name_queued_or_running_slurm(job_name):
         raise SkipTest("scontrol (SLURM) is missing")
 
     user = getuser()
+    with TemporaryDirectory() as temp_folder:
+        # Launch a sleepy slurm job
+        job_id = _do_dispatch(job_command="sleep 600", job_name=job_name,
+                              backend="slurm", time="10:00", memory=500,
+                              log_directory=temp_folder)
 
-    # Launch a sleepy slurm job
-    sleep_job = submit(job_command="sleep 600", job_name=job_name,
-                       backend="slurm", time="10:00", memory=100)
-
-    # Encoding to UTF-8 is required when passing job_name with non-ASCII chars
-    os.system(sleep_job.encode('utf-8'))
-
-    # Get job id
-    job_id = None
-    try:
-        out = subprocess.check_output(['squeue', '--noheader', '-o', '%j %i',
-                                       '-u', user])
-        for line in out.splitlines():
-            name, id_ = line.decode("utf8").split()
-
-            if job_name == name:
-                job_id = id_
-                break
-
-    except subprocess.CalledProcessError as error:
-        print(error.output)
-        raise
-
-    # Assert that the job has been launched
-    try:
-        running_jobs = queued_or_running_jobs(user=user)
-        assert_in(job_name, running_jobs)
-    finally:
-        # Make sure to clean up even if there is a failure
-        if job_id is not None:
+        # Assert that the job has been launched
+        try:
+            running_jobs = queued_or_running_jobs(user=user)
+            assert_in(job_name, running_jobs)
+        finally:
+            # Make sure to clean up even if there is a failure
             subprocess.call(["scancel", job_id])
-
-        if os.path.exists("slurm-%s.out" % job_id):
-            os.remove("slurm-%s.out" % job_id)
 
 
 def test_queued_or_running_jobs():
@@ -186,7 +201,7 @@ def test_submit():
                backend="sge"),
         'echo \'#!/bin/bash\npython main.py\' | qsub -N "job" '
         '-l h_rt=24:00:00 -l h_vmem=4000M -j y '
-        '-o path/test/$JOB_NAME.$JOB_ID.txt')
+        '-o \'path/test/$JOB_NAME.$JOB_ID.txt\'')
 
     assert_equal(
         submit(job_command="python main.py", log_directory="path/test",

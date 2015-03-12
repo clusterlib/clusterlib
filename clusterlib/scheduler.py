@@ -160,7 +160,12 @@ _SGE_TEMPLATE = {
     "email": "-M %s",
     "email_options": "-m %s",
     # "-j y" is used to join stderr and stdout in the same log file
-    "log_directory": "-j y -o %s/$JOB_NAME.$JOB_ID.txt",
+    # the simple quotes around the filename are required to avoid
+    # variables interpolation by the shell when submitting the command.
+    # $JOB_NAME and $JOB_ID are pseudo-environment variables at this point:
+    # the qsub command it-self is responsible for doing the interpolation
+    # in the filename.
+    "log_directory": "-j y -o '%s/$JOB_NAME.$JOB_ID.txt'",
 }
 
 _SLURM_TEMPLATE = {

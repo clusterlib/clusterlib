@@ -159,7 +159,8 @@ _SGE_TEMPLATE = {
     "time": "-l h_rt=%s",
     "email": "-M %s",
     "email_options": "-m %s",
-    "log_directory": "-o %s/$JOB_NAME.$JOB_ID",
+    # "-j y" is used to join stderr and stdout in the same log file
+    "log_directory": "-j y -o %s/$JOB_NAME.$JOB_ID.txt",
 }
 
 _SLURM_TEMPLATE = {
@@ -168,7 +169,7 @@ _SLURM_TEMPLATE = {
     "time": "--time=%s",
     "email": "--mail-user=%s",
     "email_options": "--mail-type=%s",
-    "log_directory": "-o %s/%s.txt",
+    "log_directory": "-o %s/%s.%%j.txt",
 }
 
 _TEMPLATE = {

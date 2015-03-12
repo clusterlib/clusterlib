@@ -105,7 +105,7 @@ def test_log_output():
                               time="700", memory=500,
                               log_directory=temp_folder)
         try:
-            for i in range(60):
+            for i in range(30):
                 if job_name not in queued_or_running_jobs(user=user):
                     # job has completed, let's check the output
                     job_completed = True
@@ -124,6 +124,8 @@ def test_log_output():
                 if _get_backend('auto') == 'slurm':
                     subprocess.call(["scancel", job_id])
                 else:
+                    print(subprocess.check_output(["qhost"]).decode('utf-8'))
+                    print(subprocess.check_output(["qstat"]).decode('utf-8'))
                     subprocess.call(["qdel", job_id])
                 raise AssertionError(
                     "job %s (%s) has not completed after 5min."

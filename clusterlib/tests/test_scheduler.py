@@ -90,10 +90,10 @@ def test_queued_or_running_jobs_no_backend():
     assert_equal(queued_or_running_jobs(), [])
 
 
-def test_log_output_sge():
-    # Check that SGE is installed
-    if _which('qmod') is None:
-        raise SkipTest("qmod (sge) is missing")
+def test_log_output():
+    # Check that a scheduler is installed
+    if _which('qmod') is None and _which('scontrol') is None:
+        raise SkipTest("qmod (sge) or scontrol (slurm) is missing")
 
     with TemporaryDirectory() as temp_folder:
 
@@ -102,10 +102,10 @@ def test_log_output_sge():
         # Launch a sleepy SGE job
         job_name = 'ok_job'
         job_id = _do_dispatch(job_command="echo ok", job_name=job_name,
-                              backend="sge", time="700", memory=500,
+                              time="700", memory=500,
                               log_directory=temp_folder)
         try:
-            for i in range(10):
+            for i in range(60):
                 if job_name not in queued_or_running_jobs(user=user):
                     # job has completed, let's check the output
                     job_completed = True
@@ -116,14 +116,18 @@ def test_log_output_sge():
                     break
                 else:
                     # Let's wait a bit before retrying
-                    sleep(10)
+                    sleep(5)
 
         finally:
             # Make sure to clean up even if there is a failure
             if not job_completed:
-                subprocess.call(["qdel", job_id])
-                raise AssertionError("job %s (%s) has not completed."
-                                     % (job_id, job_name))
+                if _get_backend('auto') == 'slurm':
+                    subprocess.call(["scancel", job_id])
+                else:
+                    subprocess.call(["qdel", job_id])
+                raise AssertionError(
+                    "job %s (%s) has not completed after 5min."
+                    % (job_id, job_name))
 
 
 def check_job_name_queued_or_running_sge(job_name):

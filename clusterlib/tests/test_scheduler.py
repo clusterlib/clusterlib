@@ -124,9 +124,6 @@ def test_log_output():
                 if _get_backend('auto') == 'slurm':
                     subprocess.call(["scancel", job_id])
                 else:
-                    print(subprocess.check_output(["qhost"]).decode('utf-8'))
-                    print(subprocess.check_output(
-                        ["qstat", "-j", job_id]).decode('utf-8'))
                     subprocess.call(["qdel", job_id])
                 raise AssertionError(
                     "job %s (%s) has not completed after 5min."

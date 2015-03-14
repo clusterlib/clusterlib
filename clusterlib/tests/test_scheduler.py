@@ -26,10 +26,10 @@ def test_auto_backend():
         del os.environ['CLUSTERLIB_BACKEND']
     try:
         # Check detection when no environment variable is set.
-        if _which('sbatch'):
+        if _which('scontrol'):
             # SLURM should be detected
             assert_equal(_get_backend('auto'), 'slurm')
-        elif _which('qsub'):
+        elif _which('qmod'):
             # SGE should be detected
             assert_equal(_get_backend('auto'), 'sge')
         else:
@@ -62,8 +62,8 @@ def test_fixed_backend():
 
 def test_queued_or_running_jobs_no_backend():
 
-    if (_which('qsub') is not None or
-            _which('sbatch') is not None):
+    if (_which('qmod') is not None or
+            _which('scontrol') is not None):
         raise SkipTest("This platform has either slurm or sge installed")
 
     assert_equal(queued_or_running_jobs(), [])
@@ -71,8 +71,8 @@ def test_queued_or_running_jobs_no_backend():
 
 def check_job_name_queued_or_running_sge(job_name):
     # Check that SGE is installed
-    if _which('qsub') is None:
-        raise SkipTest("qsub (sge) is missing")
+    if _which('qmod') is None:
+        raise SkipTest("qmod (sge) is missing")
 
     user = getuser()
     # Launch a sleepy slurm job
@@ -114,8 +114,8 @@ def check_job_name_queued_or_running_slurm(job_name):
     """Test queued or running job function on slurm"""
 
     # Check that slurm is installed
-    if _which('sbatch') is None:
-        raise SkipTest("sbatch (SLURM) is missing")
+    if _which('scontrol') is None:
+        raise SkipTest("scontrol (SLURM) is missing")
 
     user = getuser()
 

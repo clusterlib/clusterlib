@@ -53,10 +53,18 @@ def _which(program):
 
 def _get_backend(backend="auto"):
     """Detect the backend to use based on the commands present in the PATH"""
+    # To detect if the backend is available, it's better to detect the presence
+    # of administrator tools over launching (sbatch, qsub) or job status
+    # (qstat, squeue) commands since a proxy might be provided by
+    # the cluster distribution such as the rock roll cluster distribution.
+    #
+    # A tuple of tuple is used over a dict to impose a deterministic order
+    # of backend.
     backend_commands = (
-        ('slurm', 'squeue'),
-        ('sge', 'qstat'),
+        ('slurm', 'scontrol'),
+        ('sge', 'qmod'),
     )
+
     if backend == "auto":
         # If backend is auto, check that it is not configured explicitly
         # in a dedicated environment variable
@@ -70,8 +78,7 @@ def _get_backend(backend="auto"):
         raise RuntimeError("Could not find any suitable backend: %s"
                            % ", ".join(b for b, c in backend_commands))
 
-    backend_cmd = dict(backend_commands).get(backend)
-    if backend_cmd is None:
+    if dict(backend_commands).get(backend) is None:
         raise ValueError("Unsupported backend: '%s'" % backend)
     return backend
 
@@ -87,8 +94,12 @@ def _sge_queued_or_running_jobs(user=None, encoding='utf-8'):
             xml = subprocess.check_output(command, stderr=shutup)
             tree = XML(xml, parser=XMLParser(encoding=encoding))
             return [leaf.text for leaf in tree.iter("JB_name")]
-    except OSError:
-        # qstat is not available
+    except (OSError, subprocess.CalledProcessError):
+        # OSError is raised if the program is not installed
+        # A CalledProcessError is raised if there is an issue during
+        # the call of the command. This might happens if the option -xml
+        # is not available such as on rock roll clusters which provide
+        # a proxy to qstat whenever only SLURM is installed.
         return []
 
 
@@ -103,7 +114,7 @@ def _slurm_queued_or_running_jobs(user=None, encoding='utf-8'):
             out = subprocess.check_output(command, stderr=shutup)
             return out.decode(encoding).splitlines()
     except OSError:
-        # squeue is not available
+        # OSError is raised if the program is not installed
         return []
 
 

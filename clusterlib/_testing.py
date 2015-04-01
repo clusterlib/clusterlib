@@ -14,7 +14,7 @@ from tempfile import mkdtemp
 from nose import SkipTest
 from nose.tools import with_setup
 
-from clusterlib.scheduler import _get_backend
+from clusterlib.scheduler import _which
 
 SHARED_TEST_FOLDER = os.environ.get('CLUSTERLIB_TEST_SHARED_FOLDER', '.')
 DELETE_TEST_FOLDER = int(os.environ.get('CLUSTERLIB_DELETE_TEST_FOLDER', 1))
@@ -22,9 +22,10 @@ TEMP_FOLDER_PREFIX = "clusterlib_test_"
 
 
 class TemporaryDirectory(object):
-    """Create and return a temporary directory.  This has the same
-    behavior as mkdtemp but can be used as a context manager.  For
-    example:
+    """Create and return a temporary directory.
+
+    This has the same behavior as mkdtemp but can be used as a context manager.
+    For example:
 
         with TemporaryDirectory() as tmpdir:
             ...
@@ -36,14 +37,16 @@ class TemporaryDirectory(object):
     backward compat of the tests with Python 2.
 
     """
-
     # Handle mkdtemp raising an exception
     name = None
     _closed = False
 
-    def __init__(self, suffix="", prefix=TEMP_FOLDER_PREFIX,
-                 dir=SHARED_TEST_FOLDER, delete_on_exit=DELETE_TEST_FOLDER):
-        self.name = mkdtemp(suffix, prefix, dir)
+    def __init__(self,
+                 suffix="",
+                 prefix=TEMP_FOLDER_PREFIX,
+                 directory=SHARED_TEST_FOLDER,
+                 delete_on_exit=DELETE_TEST_FOLDER):
+        self.name = mkdtemp(suffix, prefix, directory)
         self.delete_on_exit = delete_on_exit
 
     @classmethod
@@ -69,9 +72,12 @@ class TemporaryDirectory(object):
 
 
 def _skip_if_no_backend():
-    try:
-        _get_backend(backend='auto')
-    except RuntimeError:
+    """Test decorator to skip test if no backend is available """
+
+    # Note that we can't use _get_backend since the user might
+    # have set the CLUSTERLIB_BACKEND environment variable.
+
+    if _which('qmod') is None and _which('scontrol') is None:
         raise SkipTest('A scheduler backend is required for this test.')
 
 

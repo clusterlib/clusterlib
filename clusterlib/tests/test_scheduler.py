@@ -12,17 +12,17 @@ from getpass import getuser
 from nose.tools import assert_equal
 from nose.tools import assert_raises
 from nose.tools import assert_in
-from nose import SkipTest
 
 from clusterlib.scheduler import queued_or_running_jobs
 from clusterlib.scheduler import submit
 from clusterlib.scheduler import _which
 from clusterlib.scheduler import _get_backend
 from clusterlib._testing import TemporaryDirectory
+from clusterlib._testing import skip_if_no_backend
 
 
 def _check_job_id(command):
-    """Perform a dispatch and return the job id"""
+    """Perform a dispatch and return the job id."""
     # TODO: This utility function should be properly documented any made more
     # robust to be included in the scheduler module itself
     cmd_encoding = 'utf-8'
@@ -40,7 +40,7 @@ def _check_job_id(command):
 
 
 def test_auto_backend():
-    """Check the backend detection logic"""
+    """Check the backend detection logic."""
     original_env_backend = os.environ.get('CLUSTERLIB_BACKEND', None)
     if original_env_backend is not None:
         del os.environ['CLUSTERLIB_BACKEND']
@@ -71,7 +71,7 @@ def test_auto_backend():
 
 
 def test_fixed_backend():
-    """Check that it is possible to fix explicit backends (when valid)"""
+    """Check that it is possible to fix explicit backends (when valid)."""
     # Supported backends
     assert_equal(_get_backend('slurm'), 'slurm')
     assert_equal(_get_backend('sge'), 'sge')
@@ -80,10 +80,9 @@ def test_fixed_backend():
     assert_raises(ValueError, _get_backend, 'hadoop')
 
 
+@skip_if_no_backend
 def test_log_output():
-    # Check that a scheduler is installed
-    if _which('qmod') is None and _which('scontrol') is None:
-        raise SkipTest("qmod (sge) or scontrol (slurm) is missing")
+    """Test that log output is uniform accross scheduler."""
 
     with TemporaryDirectory() as temp_folder:
         user = getuser()
@@ -155,14 +154,14 @@ def check_job_name_queued_or_running(job_name):
 
 
 def test_queued_or_running_jobs():
-    """Test queued or running job function on sge and slurm"""
+    """Test queued or running job function on sge and slurm."""
 
     for job_name in ["test-sleepy-job", u'test-unicode-sl\xe9\xe9py-job']:
         yield check_job_name_queued_or_running, job_name
 
 
 def test_submit():
-    """Test submit formatting function"""
+    """Test submit formatting function."""
     assert_equal(
         submit(job_command="python main.py", backend="sge"),
         'echo \'#!/bin/bash\npython main.py\' | qsub -N "job" -l '

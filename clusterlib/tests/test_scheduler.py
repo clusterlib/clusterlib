@@ -18,7 +18,7 @@ from clusterlib.scheduler import queued_or_running_jobs
 from clusterlib.scheduler import submit
 from clusterlib.scheduler import _which
 from clusterlib.scheduler import _get_backend
-from clusterlib.testing import TemporaryDirectory
+from clusterlib._testing import TemporaryDirectory
 
 
 def _do_dispatch(*args, **kwargs):

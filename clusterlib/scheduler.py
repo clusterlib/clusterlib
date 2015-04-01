@@ -219,6 +219,8 @@ def submit(job_command, job_name="job", time="24:00:00", memory=4000,
 
     log_directory : str, optional (default=None)
         Specify the log directory. If None, no log directory is specified.
+        Job logs will be at log_directory with the name ``job_name.job_id.txt``
+        where the ``job_id`` is given by the scheduler.
 
     backend : {'auto', 'slurm', 'sge'}, optional (default="auto")
         Backend where the job will be submitted. If 'auto', try detect

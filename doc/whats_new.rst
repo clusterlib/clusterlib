@@ -23,8 +23,16 @@ Changelog
       in the ``PATH`` with ``backend='auto'`` (enabled by default).
       By `Olivier Grisel`_
 
-    - Make `queued_or_running_jobs` return decoded job names (unicode strings
-      instead of byte strings). By `Olivier Grisel`_
+    - Make :func:`scheduler.queued_or_running_jobs` return decoded job names
+      (unicode strings instead of byte strings). By `Olivier Grisel`_
+
+    - Whenever the ``log_directory`` argument of :func:`scheduler.submit`
+      is specified, the job log is now writtend at the location
+      of the log directory under the name ``job_name.job_id.txt`` where
+      ``job_name`` is the name of the jobs and ``job_id`` is the job id
+      given by the scheduler. The stdout and stderr streams are now joined on
+      SGE (as for the default behavior of SLURM).
+      By `Olivier Grisel`_
 
 0.1
 ===

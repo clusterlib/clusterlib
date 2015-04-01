@@ -272,6 +272,7 @@ def submit(job_command, job_name="job", time="24:00:00", memory=4000,
         job_options.append(template["email_options"] % email_options)
 
     if log_directory is not None:
+        # SGE is non-robust to non absolute path
         log_directory = os.path.abspath(log_directory)
         if backend == "sge":
             job_options.append(template["log_directory"] % log_directory)

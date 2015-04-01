@@ -118,7 +118,7 @@ def sqlite3_loads(file_name, key=None, timeout=7200.0):
 
 
 def sqlite3_dumps(dictionnary, file_name, timeout=7200.0):
-    """Dumps value with key in the sqlite3 database.
+    """Dump value with key in the sqlite3 database.
 
     Parameters
     ----------

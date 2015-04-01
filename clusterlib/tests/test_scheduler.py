@@ -138,7 +138,7 @@ def check_job_name_queued_or_running(job_name):
         user = getuser()
 
         # Launch job
-        command = submit(job_command="echo ok", job_name=job_name,
+        command = submit(job_command="sleep 600", job_name=job_name,
                          time="700", memory=500, log_directory=temp_folder)
         job_id = _check_job_id(command)
 

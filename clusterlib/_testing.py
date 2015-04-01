@@ -37,6 +37,7 @@ class TemporaryDirectory(object):
     backward compat of the tests with Python 2.
 
     """
+
     # Handle mkdtemp raising an exception
     name = None
     _closed = False

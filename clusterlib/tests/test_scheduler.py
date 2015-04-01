@@ -81,7 +81,7 @@ def test_fixed_backend():
 
 
 @skip_if_no_backend
-def test_log_output():
+def test_log_output(n_trials=30):
     """Test that log output is uniform accross scheduler."""
 
     with TemporaryDirectory() as temp_folder:
@@ -95,7 +95,7 @@ def test_log_output():
         job_id = _check_job_id(command)
 
         try:
-            for i in range(30):
+            for _ in range(n_trials):
                 if job_name not in queued_or_running_jobs(user=user):
                     # job has completed, let's check the output
                     job_completed = True

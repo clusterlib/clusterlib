@@ -24,18 +24,18 @@ __all__ = [
 
 
 def _decompressed(value):
-    """Decompressed a binary object compressed with pickle from sqlite3"""
+    """Decompressed a binary object compressed with pickle from sqlite3."""
     return pickle.loads(bytes(value))
 
 
 def _compressed(value):
-    """Compressed binary object with highest pickle protocol for sqlite3"""
+    """Compressed binary object with highest pickle protocol for sqlite3."""
     return sqlite3.Binary(pickle.dumps(value,
                                        protocol=pickle.HIGHEST_PROTOCOL))
 
 
 def sqlite3_loads(file_name, key=None, timeout=7200.0):
-    """Load value with key from sqlite3 stored at fname
+    """Load value with key from sqlite3 stored at fname.
 
     In order to improve performance, it's advised to
     query the database using a (small) list of keys. Otherwise by calling
@@ -118,7 +118,7 @@ def sqlite3_loads(file_name, key=None, timeout=7200.0):
 
 
 def sqlite3_dumps(dictionnary, file_name, timeout=7200.0):
-    """Dumps value with key in the sqlite3 database
+    """Dumps value with key in the sqlite3 database.
 
     Parameters
     ----------

@@ -26,7 +26,7 @@ __all__ = [
 
 
 def _which(program):
-    """Check the presence of an executable in the PATH
+    """Check the presence of an executable in the PATH.
 
     Credits: http://stackoverflow.com/questions/377017
     """
@@ -52,7 +52,7 @@ def _which(program):
 
 
 def _get_backend(backend="auto"):
-    """Detect the backend to use based on the commands present in the PATH"""
+    """Detect the backend to use based on the commands present in the PATH."""
     # To detect if the backend is available, it's better to detect the presence
     # of administrator tools over launching (sbatch, qsub) or job status
     # (qstat, squeue) commands since a proxy might be provided by
@@ -84,7 +84,7 @@ def _get_backend(backend="auto"):
 
 
 def _sge_queued_or_running_jobs(user=None, encoding='utf-8'):
-    """Get queued or running jobs from SGE queue system"""
+    """Get queued or running jobs from SGE queue system."""
     command = ["qstat", "-xml"]
     if user is not None:
         command.extend(["-u", user])
@@ -104,7 +104,7 @@ def _sge_queued_or_running_jobs(user=None, encoding='utf-8'):
 
 
 def _slurm_queued_or_running_jobs(user=None, encoding='utf-8'):
-    """Get queued or running jobs from SLURM queue system"""
+    """Get queued or running jobs from SLURM queue system."""
     command = ["squeue", "--noheader", "-o", "%j"]
     if user is not None:
         command.extend(["-u", user])
@@ -119,7 +119,7 @@ def _slurm_queued_or_running_jobs(user=None, encoding='utf-8'):
 
 
 def queued_or_running_jobs(user=None, encoding='utf-8'):
-    """Return the names of the queued or running jobs under SGE and SLURM
+    """Return the names of the queued or running jobs under SGE and SLURM.
 
     The list of jobs could be either the list of all jobs on the scheduler
     or only the jobs associated to the user calling this function.
@@ -191,7 +191,7 @@ _LAUNCHER = {
 def submit(job_command, job_name="job", time="24:00:00", memory=4000,
            email=None, email_options=None, log_directory=None, backend="auto",
            shell_script="#!/bin/bash"):
-    """Write the submission query (without script)
+    """Write the submission query (without script).
 
     Parameters
     ----------

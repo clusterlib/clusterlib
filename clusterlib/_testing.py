@@ -61,7 +61,7 @@ class TemporaryDirectory(object):
     def __enter__(self):
         return self.name
 
-    def __exit__(self, exc, value, tb):
+    def __exit__(self, exc_type, exc_value, traceback):
         if self.delete_on_exit:
             self.cleanup()
 

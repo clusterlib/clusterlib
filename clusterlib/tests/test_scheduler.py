@@ -101,8 +101,8 @@ def test_log_output(n_trials=30):
                     job_completed = True
                     filename = "%s.%s.txt" % (job_name, job_id)
                     assert_equal(os.listdir(temp_folder), [filename])
-                    with open(op.join(temp_folder, filename)) as f:
-                        assert_equal(f.read().strip(), "ok")
+                    with open(op.join(temp_folder, filename)) as fhandle:
+                        assert_equal(fhandle.read().strip(), "ok")
                     break
                 else:
                     # Let's wait a bit before retrying

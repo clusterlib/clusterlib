@@ -1,4 +1,4 @@
-"""Utilities for testing
+"""Utilities for testing.
 
 Note: this module has a dependency on the nose package.
 
@@ -72,11 +72,9 @@ class TemporaryDirectory(object):
 
 
 def _skip_if_no_backend():
-    """Test decorator to skip test if no backend is available """
-
+    """Test decorator to skip test if no backend is available."""
     # Note that we can't use _get_backend since the user might
     # have set the CLUSTERLIB_BACKEND environment variable.
-
     if _which('qmod') is None and _which('scontrol') is None:
         raise SkipTest('A scheduler backend is required for this test.')
 

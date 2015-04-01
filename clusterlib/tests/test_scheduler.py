@@ -9,6 +9,7 @@ from time import sleep
 import subprocess
 from getpass import getuser
 
+from nose import SkipTest
 from nose.tools import assert_equal
 from nose.tools import assert_raises
 from nose.tools import assert_in
@@ -120,37 +121,40 @@ def test_log_output(n_trials=30):
                     % (job_id, job_name))
 
 
-def check_job_name_queued_or_running(job_name):
-    # Check that a backend is installed
+def test_queued_or_running_jobs_nobackend():
+    """Test queued or running whenever no backend is available."""
     # Note that we can't use _get_backend since the user might
     # have set the CLUSTERLIB_BACKEND environment variable.
     if _which('qmod') is None and _which('scontrol') is None:
         # No backend available, thus no running job
         assert_equal(queued_or_running_jobs(), [])
-
     else:
-        with TemporaryDirectory() as temp_folder:
-            user = getuser()
+        raise SkipTest("A backend is installed")
 
-            # Launch job
-            command = submit(job_command="echo ok", job_name=job_name,
-                             time="700", memory=500,
-                             log_directory=temp_folder)
-            job_id = _check_job_id(command)
 
-            # Assert that the job has been launched
-            try:
-                running_jobs = queued_or_running_jobs(user=user)
-                assert_in(job_name, running_jobs)
-            finally:
-                # Make sure to clean up even if there is a failure
-                if _get_backend() == "slurm":
-                    subprocess.call(["scancel", job_id])
+@skip_if_no_backend
+def check_job_name_queued_or_running(job_name):
+    with TemporaryDirectory() as temp_folder:
+        user = getuser()
 
-                elif _get_backend() == "sge":
-                    subprocess.call(["qdel", job_id])
-                else:
-                    raise NotImplementedError("backend not implemented")
+        # Launch job
+        command = submit(job_command="echo ok", job_name=job_name,
+                         time="700", memory=500, log_directory=temp_folder)
+        job_id = _check_job_id(command)
+
+        # Assert that the job has been launched
+        try:
+            running_jobs = queued_or_running_jobs(user=user)
+            assert_in(job_name, running_jobs)
+        finally:
+            # Make sure to clean up even if there is a failure
+            if _get_backend() == "slurm":
+                subprocess.call(["scancel", job_id])
+
+            elif _get_backend() == "sge":
+                subprocess.call(["qdel", job_id])
+            else:
+                raise NotImplementedError("backend not implemented")
 
 
 def test_queued_or_running_jobs():

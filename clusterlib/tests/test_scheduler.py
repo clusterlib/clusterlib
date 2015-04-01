@@ -21,7 +21,7 @@ from clusterlib.scheduler import _get_backend
 from clusterlib._testing import TemporaryDirectory
 
 
-def _do_dispatch(*args, **kwargs):
+def _check_job_id(*args, **kwargs):
     """Perform a dispatch with the submit command and return the job id"""
     # TODO: This utility function should be properly documented any made more
     # robust to be included in the scheduler module itself
@@ -96,12 +96,11 @@ def test_log_output():
         raise SkipTest("qmod (sge) or scontrol (slurm) is missing")
 
     with TemporaryDirectory() as temp_folder:
-
         user = getuser()
         job_completed = False
         # Launch a sleepy SGE job
         job_name = 'ok_job'
-        job_id = _do_dispatch(job_command="echo ok", job_name=job_name,
+        job_id = _check_job_id(job_command="echo ok", job_name=job_name,
                               time="700", memory=500,
                               log_directory=temp_folder)
         try:
@@ -132,14 +131,14 @@ def test_log_output():
 
 def check_job_name_queued_or_running_sge(job_name):
     # Check that SGE is installed
-    if _which('qsub') is None:
-        raise SkipTest("qsub (sge) is missing")
+    if _which('qmod') is None:
+        raise SkipTest("qmod (sge) is missing")
 
     with TemporaryDirectory() as temp_folder:
 
         user = getuser()
         # Launch a sleepy SGE job
-        job_id = _do_dispatch(job_command="sleep 600", job_name=job_name,
+        job_id = _check_job_id(job_command="sleep 600", job_name=job_name,
                               backend="sge", time="700", memory=500,
                               log_directory=temp_folder)
         # Assert that the job has been launched
@@ -161,7 +160,7 @@ def check_job_name_queued_or_running_slurm(job_name):
     user = getuser()
     with TemporaryDirectory() as temp_folder:
         # Launch a sleepy slurm job
-        job_id = _do_dispatch(job_command="sleep 600", job_name=job_name,
+        job_id = _check_job_id(job_command="sleep 600", job_name=job_name,
                               backend="slurm", time="10:00", memory=500,
                               log_directory=temp_folder)
 

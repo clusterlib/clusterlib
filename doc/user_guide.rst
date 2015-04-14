@@ -172,7 +172,6 @@ debug options to our job management script.
 
     import os
     import argparse
-    from clusterlib.scheduler import queued_or_running_jobs
     from clusterlib.scheduler import submit
 
     LOG_DIRECTORY = "~/clusterlib_logs"

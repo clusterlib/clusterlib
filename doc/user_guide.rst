@@ -155,6 +155,57 @@ This simple launcher allows to manage thousands of jobs while avoiding
 to repeat jobs that are processed or in process.
 
 
+How to take advantage of scheduler logs in job management?
+----------------------------------------------------------
+
+Jobs that are sent to a cluster might fail due to programming errors or
+to exceeding booked ressources (time, memory). Nevertheless, the scheduler
+will report error traceback and might inform you of why your jobs has been
+killed in a log file. With the :func:`clusterlib.scheduler.submit`,
+job logs will be at specify directory with the format ``job_name.job_id.txt``
+where the ``job_id`` is given by the scheduler.
+
+For examples, we can take advantage of this log path normalisation by adding
+debug options to our job management script.
+
+.. code-block:: python
+
+    import os
+    import argparse
+    from clusterlib.scheduler import queued_or_running_jobs
+    from clusterlib.scheduler import submit
+
+    LOG_DIRECTORY = "~/clusterlib_logs"
+
+    if __name__ == "__main__":
+        # Let's a debug option to this script
+        parser = argparse.ArgumentParser()
+        parser.add_argument('-d', '--debug', default=False, action="store_true",
+                            help="Display debug logs if any")
+        args = vars(parser.parse_args())
+
+        # Create the log directory if needed
+        if not os.path.exists(LOG_DIRECTORY):
+            os.makedirs(LOG_DIRECTORY)
+
+        for param in range(100):
+            job_name = "job-param=%s" % param
+            script = submit("./main --param %s" % param,
+                            job_name=job_name,
+                            log_directory=LOG_DIRECTORY)
+
+            if args["debug"]:  # Display logs if any
+                os.system("cat %s"
+                          % os.path.join(LOG_DIRECTORY, "%s.*.txt" % job_hash))
+
+            os.system(script.encode('utf-8'))
+
+
+The previous example can be enhanced by displaying only logs of jobs that
+might have failed and by automatically increasing time and memory ressources
+for jobs having been cancelled due hitting the limits.
+
+
 Choosing the backend implementation
 -----------------------------------
 

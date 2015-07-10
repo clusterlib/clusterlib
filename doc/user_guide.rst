@@ -86,6 +86,22 @@ by making a line break in the job command::
     srun hostname
     sleep 60' | sbatch --job-name=job-name --time=10:00 --mem=1000
 
+Given the :func:`clusterlib.scheduler.submit` function, launching a large
+number of jobs is as easy as::
+
+    >>> for param in range(3):
+    ...     script = submit('./main --param %s' % param,
+    ...                     job_name='j-%s' % param, backend="slurm")
+    ...     print(script)
+    ...     # os.system(script)
+    ...
+    echo '#!/bin/bash
+    ./main --param 0' | sbatch --job-name=j-0 --time=24:00:00 --mem=4000
+    echo '#!/bin/bash
+    ./main --param 1' | sbatch --job-name=j-1 --time=24:00:00 --mem=4000
+    echo '#!/bin/bash
+    ./main --param 2' | sbatch --job-name=j-2 --time=24:00:00 --mem=4000
+
 
 How to avoid re-launching queued or running jobs?
 -------------------------------------------------

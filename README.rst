@@ -47,7 +47,9 @@ As any Python packages, to install clusterlib, simply do:
 
     python setup.py install
 
-in the source code directory.
+in the source code directory. You can also use ``pip``
+
+    pip install clusterlib
 
 How to contribute?
 ------------------

@@ -37,9 +37,9 @@ def _compressed(value):
 def sqlite3_loads(file_name, key=None, timeout=7200.0):
     """Load value with key from sqlite3 stored at fname.
 
-    In order to improve performance, it's advised to
-    query the database using a (small) list of keys. Otherwise by calling
-    this functions repeatedly, you might run into the `SQlite lock timeout
+    In order to improve performance, it's advised to query the database using as
+    many keys as possible at once. Otherwise by calling this function
+    repeatedly, you might run into the `SQlite lock timeout
     <http://beets.radbox.org/blog/sqlite-nightmare.html>`_.
 
     Parameters
@@ -48,8 +48,8 @@ def sqlite3_loads(file_name, key=None, timeout=7200.0):
         Path to the sqlite database.
 
     key : str or list of str or None, optional (default=None)
-        Key used when the value was stored or list of keys. If None, all
-        key, value pair from the database are returned.
+        Key or list of keys used when the value was stored. If ``key`` is None,
+        all key value pairs are returned from the database.
 
     timeout : float, optional (default=7200.0)
         The timeout parameter specifies how long the connection should wait
@@ -119,6 +119,11 @@ def sqlite3_loads(file_name, key=None, timeout=7200.0):
 
 def sqlite3_dumps(dictionnary, file_name, timeout=7200.0):
     """Dump value with key in the sqlite3 database.
+
+    In order to improve performance, it's advised to dump into the database as
+    many entry as possible at once. Otherwise by calling this function
+    repeatedly, you might run into the `SQlite lock timeout
+    <http://beets.radbox.org/blog/sqlite-nightmare.html>`_.
 
     Parameters
     ----------

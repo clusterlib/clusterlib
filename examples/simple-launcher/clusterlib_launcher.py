@@ -12,8 +12,8 @@ if __name__ == "__main__":
 
     for param in range(100):
         job_name = "job-param=%s" % param
-        job_command = "%s clusterlib.py --param %s" % (sys.executable,
-                                                       param)
+        job_command = "%s clusterlib_main.py --param %s" % (sys.executable,
+                                                            param)
 
         if job_name not in scheduled_jobs and job_command not in done_jobs:
             script = submit(job_command, job_name=job_name)

@@ -117,7 +117,7 @@ def sqlite3_loads(file_name, key=None, timeout=7200.0):
     return out
 
 
-def sqlite3_dumps(dictionnary, file_name, timeout=7200.0):
+def sqlite3_dumps(dictionnary, file_name, timeout=7200.0, overwrite=False):
     """Dump value with key in the sqlite3 database.
 
     In order to improve performance, it's advised to dump into the database as
@@ -160,5 +160,10 @@ def sqlite3_dumps(dictionnary, file_name, timeout=7200.0):
                               (key TEXT PRIMARY KEY, value BLOB)""")
 
         # Add a new key
-        connection.executemany("INSERT INTO dict(key, value) VALUES (?, ?)",
-                               compressed_dict.items())
+        if overwrite:
+            connection.executemany("INSERT OR REPLACE INTO dict(key, value)"
+                                   "VALUES (?, ?)",
+                                   compressed_dict.items())
+        else:
+            connection.executemany("INSERT INTO dict(key, value) VALUES (?, ?)",
+                                   compressed_dict.items())

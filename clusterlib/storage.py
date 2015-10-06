@@ -132,7 +132,7 @@ def sqlite3_dumps(dictionnary, file_name, timeout=7200.0, overwrite=False):
         it will raise an exception if the key is already present in the
         database.
 
-    fname : str
+    file_name : str
         Path to the sqlite database.
 
     timeout : float, optional (default=7200.0)

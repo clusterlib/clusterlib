@@ -40,8 +40,12 @@ def test_sqlite3_storage():
                      {"complex": complex_object})
 
         # Try to insert object twice
+            # By default, raise an integrety error
         assert_raises(sqlite3.IntegrityError, sqlite3_dumps,
                       {"complex": complex_object}, fname)
+            # Can be overwritten
+        sqlite3_dumps({"complex": complex_object}, fname, overwrite=True)
+
 
         # Ensure that we can store None
         sqlite3_dumps({"None": None}, fname)

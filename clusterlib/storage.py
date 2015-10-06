@@ -139,6 +139,11 @@ def sqlite3_dumps(dictionnary, file_name, timeout=7200.0, overwrite=False):
         The timeout parameter specifies how long the connection should wait
         for the lock to go away until raising an exception.
 
+    overwrite : bool, optional (default=False)
+        Whether to overwrite the value associated to a key already present
+        in the database. If True, the value is replaced in case of conflict.
+        If False, an IntegrityError is raised in case of conflict.
+
     Examples
     --------
     Here, we generate a temporary sqlite3 database, then dump some data in it.

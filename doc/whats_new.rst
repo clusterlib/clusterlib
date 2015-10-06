@@ -34,6 +34,11 @@ Changelog
       SGE (as for the default behavior of SLURM).
       By `Olivier Grisel`_
 
+    - Add the possibility to overwrite a value associated to a key already
+      present in the database in :func:`storage.sqlite3_dumps` instead of
+      raising an IntegrityError.
+      By `Jean Michel Begon`_
+
 0.1
 ===
 
